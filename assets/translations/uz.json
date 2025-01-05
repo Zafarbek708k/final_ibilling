@@ -1,0 +1,27 @@
+
+{
+  "hello": "Salom",
+  "invoice": "Hisob",
+  "contract": "Shartnoma",
+  "history": "Tarix",
+  "addNew": "Yangi qo'shish",
+  "saved": "Saqlangan",
+  "profile": "Profil",
+  "fish": "FISh:",
+  "amount": "Miqdori:",
+  "lastInvoice": "Oxirgi Invoice:",
+  "numInvoice": "Invoice raqami:",
+  "paid" : "To'langan",
+  "inProcess": "Jarayonda",
+  "rejectByPayme": "Payme tarafidan bekor qilingan",
+  "rejectByIQ": "IQ tarafidan bekor qilingan",
+  "emptyHistory": "Ushbu davrga tegishli tarix mavjud emas",
+  "fullName": "To'liq ism",
+  "addressOrganization": "Tashkilot nomi",
+  "inn": "INN",
+  "statusContract": "Shartnoma holati",
+  "noSaved": "Saqlangan shartnomalar mavjud emas",
+  "birth": "Tugilgan sana",
+  "phone": "Telefon raqami",
+  "email": "Elektron pochta"
+}

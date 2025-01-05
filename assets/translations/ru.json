@@ -1,0 +1,26 @@
+
+{
+  "hello": "Привет",
+  "contract": "Контракт",
+  "history": "История",
+  "addNew": "Добавить новое",
+  "saved": "Сохранено",
+  "profile": "Профиль",
+  "fish": "ФИО:",
+  "amount": "Сумма:",
+  "lastInvoice": "Последний счет:",
+  "numInvoice": "Номер счета:",
+  "paid": "Оплачено",
+  "inProcess": "В процессе",
+  "rejectByPayme": "Отклонено Payme",
+  "rejectByIQ": "Отклонено IQ",
+  "emptyHistory": "Нет истории за этот период",
+  "fullName": "Полное имя",
+  "addressOrganization": "Название организации",
+  "inn": "ИНН",
+  "statusContract": "Статус контракта",
+  "noSaved": "Нет сохраненных контрактов",
+  "birth": "Дата рождения",
+  "phone": "Номер телефона",
+  "email": "Электронная почта"
+}
