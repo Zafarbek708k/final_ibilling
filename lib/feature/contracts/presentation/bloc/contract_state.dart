@@ -4,8 +4,8 @@ enum ContractStateStatus { initial, loading, loaded, error }
 
 class ContractState extends Equatable {
   final ContractStateStatus status;
-  final List<UserModel> userList;
-  final List<ContractModel> filteredList;
+  final List<UserEntity> userList;
+  final List<ContractEntity> filteredList;
   final String errorMsg;
 
   const ContractState({
@@ -18,8 +18,8 @@ class ContractState extends Equatable {
   ContractState copyWith({
     ContractStateStatus? status,
     String? errorMsg,
-    List<UserModel>? userList,
-    List<ContractModel>? filteredList,
+    List<UserEntity>? userList,
+    List<ContractEntity>? filteredList,
   }) =>
       ContractState(
         status: status ?? this.status,

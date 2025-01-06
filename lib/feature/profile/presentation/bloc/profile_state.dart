@@ -1,10 +1,24 @@
 part of 'profile_bloc.dart';
 
-sealed class ProfileState extends Equatable {
-  const ProfileState();
-}
+enum ProfileStateStatus { init, loading, loaded, error }
 
-final class ProfileInitial extends ProfileState {
+class ProfileState extends Equatable {
+  final ProfileStateStatus status;
+  final String errorMsg;
+  final String locale;
+
+  const ProfileState({this.status = ProfileStateStatus.init, this.errorMsg = "", this.locale =""});
+
+  ProfileState copyWith({
+    ProfileStateStatus? status,
+    String? errorMsg,
+    String? locale,
+})=> ProfileState(
+    locale: locale ?? this.locale,
+    status: status ?? this.status,
+    errorMsg: errorMsg ?? this.errorMsg,
+  );
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [status, errorMsg, locale];
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import '../../domain/entities/contract_entity.dart';
 
 List<UserModel> userModelFromJson(String str) => List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));
-
+List<ContractModel> contractModelFromJson(String str) => List<ContractModel>.from(json.decode(str).map((x) => ContractModel.fromJson(x)));
 String userModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class UserModel extends UserEntity {
