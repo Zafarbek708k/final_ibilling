@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:final_ibilling/core/error/exception.dart';
 import 'package:final_ibilling/core/error/failure.dart';
 import 'package:final_ibilling/core/utils/constants.dart';
-import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/domain/repositories/contract_repository.dart';
 

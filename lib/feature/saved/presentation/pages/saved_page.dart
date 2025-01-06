@@ -20,6 +20,7 @@ class _SavedPageState extends State<SavedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         leading: const Padding(
           padding: EdgeInsets.only(left: 10.0, bottom: 4),
           child: CircleAvatar(backgroundColor: AppColors.darkGray, radius: 8),

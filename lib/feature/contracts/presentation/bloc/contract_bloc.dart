@@ -29,7 +29,7 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
         emit(state.copyWith(status: ContractStateStatus.error, errorMsg: failure.message));
       },
       (users) {
-        final contracts = users.expand((user) => user.contracts as List<ContractEntity>).toList();
+        final contracts = users.expand((user) => user.contracts).toList();
         log("user count ${users.length} contracts count = ${contracts.length}");
         emit(state.copyWith(status: ContractStateStatus.loaded, userList: users, filteredList: contracts));
       },
@@ -52,4 +52,17 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       },
     );
   }
+
+  void search(String text){
+    final list = state.filteredList;
+    final searchList = list.where((contract){
+      return contract.author.toString().toLowerCase().contains(text.toLowerCase());
+    }).toList();
+    emit(state.copyWith(searchList: searchList));
+  }
+
+  void clear(){
+    emit(state.copyWith(searchList: []));
+  }
+
 }

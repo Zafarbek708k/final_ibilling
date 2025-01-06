@@ -26,7 +26,7 @@ class LocalizationCubit extends Cubit<Locale> {
     emit(locale);
     context.setLocale(locale);
     await StorageRepository.putString(StorageKeys.locale, locale.languageCode);
-    log("change locale = $locale");
+    log("change locale in localization cubit =>  $locale");
   }
 
   Locale _getLocaleFromCode(String code) {

@@ -4,6 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:final_ibilling/core/api/dio_setting.dart';
 import 'package:final_ibilling/feature/contracts/data/data_source/contracts_remote_datasource.dart';
 import 'package:final_ibilling/feature/contracts/data/repositories/contract_repository_impl.dart';
+import 'package:final_ibilling/feature/history/data/datasource/history_remote_datasource.dart';
+import 'package:final_ibilling/feature/history/data/repositories/history_repository_impl.dart';
+import 'package:final_ibilling/feature/history/domain/repositories/history_repository.dart';
 import 'package:final_ibilling/feature/saved/data/datasource/saved_remote_datasource.dart';
 import 'package:final_ibilling/feature/saved/data/repositories/saved_contract_repository_impl.dart';
 import 'package:final_ibilling/feature/saved/domain/repositories/saved_contract_repository.dart';
@@ -22,8 +25,10 @@ Future<void> setupLocator() async {
   /// Register Data Sources
   sl.registerLazySingleton<ContractsRemoteDataSource>(() => ContractsRemoteDataSourceImpl(dio: sl<Dio>()));
   sl.registerLazySingleton<SavedRemoteDataSource>(() => SavedRemoteDataSourceImpl(dio: sl<Dio>()));
+  sl.registerLazySingleton<HistoryRemoteDataSource>(() => HistoryRemoteDataSourceImpl(dio: sl<Dio>()));
 
   /// Register Repositories
   sl.registerLazySingleton<ContractRepository>(() => ContractRepositoryImpl(dataSource: sl<ContractsRemoteDataSource>()));
   sl.registerLazySingleton<SavedContractRepository>(() => SavedContractRepositoryImpl(dataSource: sl<SavedRemoteDataSource>()));
+  sl.registerLazySingleton<HistoryRepository>(() => HistoryRepositoryImpl(dataSource: sl<HistoryRemoteDataSource>()));
 }

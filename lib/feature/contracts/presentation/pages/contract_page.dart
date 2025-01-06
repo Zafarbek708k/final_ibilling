@@ -1,13 +1,13 @@
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
-import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
-import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
-import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
+import 'package:final_ibilling/feature/contracts/presentation/pages/contract_loaded.dart';
+import 'package:final_ibilling/feature/contracts/presentation/widgets/calendar.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/loading_state_widget.dart';
 import 'package:final_ibilling/feature/filter/presentation/pages/filter_page.dart';
-import 'package:final_ibilling/feature/search/presentation/pages/search_page.dart';
+import 'package:final_ibilling/feature/contracts/presentation/pages/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../bloc/contract_bloc.dart';
@@ -56,39 +56,20 @@ class _ContractPageState extends State<ContractPage> {
             );
           }
           if (state.status == ContractStateStatus.loaded) {
-            return ContractLoadedWidget(contracts: state.filteredList);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Column(
+                children: [
+                  16.verticalSpace,
+                  CustomCalendarWidget(pressData: () {}),
+                  10.verticalSpace,
+                  Expanded(child: ContractLoadedWidget(contracts: state.filteredList)),
+                ],
+              ),
+            );
           }
           return const SizedBox.shrink();
         },
-      ),
-    );
-  }
-}
-
-class ContractLoadedWidget extends StatelessWidget {
-  const ContractLoadedWidget({super.key, required this.contracts});
-
-  final List<ContractEntity> contracts;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18.0),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          context.read<ContractBloc>().add(GetALlContractEvent());
-        },
-        child: ListView(
-          children: [
-            ...List.generate(
-              contracts.length,
-              (index) {
-                final contract = contracts[index];
-                return ContractWidget(onTap: () {}, model: contract);
-              },
-            )
-          ],
-        ),
       ),
     );
   }

@@ -29,9 +29,9 @@ abstract class AppTheme {
 abstract class DarkTheme {
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.darkest,
+    scaffoldBackgroundColor: AppColors.black,
     primaryColor: Colors.deepPurple,
-    appBarTheme: const AppBarTheme(),
+    appBarTheme: const AppBarTheme(backgroundColor: AppColors.black),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       type: BottomNavigationBarType.fixed,
       backgroundColor: AppColors.darkDarker,

@@ -1,8 +1,10 @@
 import 'dart:developer';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/core/singletons/storage/storage.dart';
 import 'package:final_ibilling/core/singletons/storage/storage_keys.dart';
+import 'package:final_ibilling/feature/main_wrapper/main_wrap.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,9 +23,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Future<void>_changeLocaleInProfile(ChangeLocaleInProfile event, Emitter<ProfileState>emit)async{
     emit(state.copyWith(status: ProfileStateStatus.loading));
     try{
+      log("chage to locale => ${event.locale}");
       await StorageRepository.putString(StorageKeys.locale, event.locale);
-      emit(state.copyWith(status: ProfileStateStatus.loaded));
+      emit(state.copyWith(status: ProfileStateStatus.loaded, locale: event.locale));
       event.context.read<LocalizationCubit>().changeLocale(_getLocaleFromCode(event.locale), event.context);
+      event.context.setLocale(_getLocaleFromCode(event.locale));
     }catch(e){
       emit(state.copyWith(status: ProfileStateStatus.error, errorMsg: "Something went wrong"));
     }
@@ -31,15 +35,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
 
   Future<void> getLanguage()async{
-    log("get language profile bloc");
     emit(state.copyWith(status: ProfileStateStatus.loading));
     String? result =  StorageRepository.getString(StorageKeys.locale);
     if(result != null){
-      log("profile loaded locale $result");
       emit(state.copyWith(status: ProfileStateStatus.loaded, locale: result));
     }else{
-      log("profile error");
-      // emit(state.copyWith(status: ProfileStateStatus.loaded, locale: "uz"));
       emit(state.copyWith(status: ProfileStateStatus.error, errorMsg: "Locale is not find"));
     }
   }
