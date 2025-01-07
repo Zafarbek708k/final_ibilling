@@ -37,7 +37,7 @@ class _ContractPageState extends State<ContractPage> {
           ),
           const Text("|", style: TextStyle(color: Colors.white, fontSize: 20)),
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SearchPage())),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage())),
             icon: const Icon(Icons.search, color: AppColors.white),
           ),
         ],
@@ -51,9 +51,7 @@ class _ContractPageState extends State<ContractPage> {
             return ErrorStateWidget(errorMsg: state.errorMsg);
           }
           if (state.status == ContractStateStatus.initial) {
-            return const Center(
-              child: Text("load more item"),
-            );
+            return const Center(child: Text("load more item"));
           }
           if (state.status == ContractStateStatus.loaded) {
             return Padding(

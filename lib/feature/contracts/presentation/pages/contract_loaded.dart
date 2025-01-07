@@ -1,4 +1,5 @@
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
+import 'package:final_ibilling/feature/contracts/presentation/pages/single.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -91,7 +92,9 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
           if (index < displayedList.length) {
             final contract = displayedList[index];
             return ContractWidget(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Single(entity: contract, fullContracts: displayedList)));
+              },
               model: contract,
             );
           } else {

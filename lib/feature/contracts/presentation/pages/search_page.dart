@@ -51,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
           } else if (state.status == ContractStateStatus.error) {
             return ErrorStateWidget(errorMsg: state.errorMsg);
           } else if (state.status == ContractStateStatus.loaded) {
-            return SearchLoadedUi(searchList: state.searchList.isEmpty ? state.filteredList : state.searchList);
+            return SearchLoadedUi(searchList: state.searchList.isEmpty ? state.fullContract : state.searchList);
           } else {
             return const SizedBox.shrink();
           }
