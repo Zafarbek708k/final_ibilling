@@ -1,4 +1,4 @@
-
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
@@ -9,8 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../contracts/presentation/bloc/contract_bloc.dart';
 
-class DateSelection extends StatelessWidget {
-  const DateSelection({super.key});
+class HistoryDateSelection extends StatelessWidget {
+  const HistoryDateSelection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,10 @@ class DateSelection extends StatelessWidget {
             DateBox(
               label: "Begin Date",
               date: state.startTime,
-              onDateSelected: (selectedDate){},
-              // onDateSelected: (selectedData) => context.read<ContractBloc>().add(BeginDateSelectEvent(beginTime: selectedData)),
+              onDateSelected: (selectedData) {
+                // log("begin date = ${state.b}")
+                context.read<ContractBloc>().add(BeginDateSelectEvent(beginTime: selectedData));
+              },
             ),
             const SizedBox(width: 12),
             const Padding(
@@ -33,9 +35,9 @@ class DateSelection extends StatelessWidget {
             DateBox(
               label: "End Date",
               date: state.endTime,
-              onDateSelected: (selectedData){},
-              // onDateSelected: (selectedData) => context.read<ContractBloc>().add(EndDateSelectEvent(endTime: selectedData)),
-            ),
+              onDateSelected: (selectedData) {
+                context.read<ContractBloc>().add(EndDateSelectEvent(endTime: selectedData));
+              },),
           ],
         );
       },

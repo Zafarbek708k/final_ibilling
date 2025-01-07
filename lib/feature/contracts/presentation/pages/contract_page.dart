@@ -1,10 +1,10 @@
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_loaded.dart';
+import 'package:final_ibilling/feature/contracts/presentation/pages/filter_page.dart';
+import 'package:final_ibilling/feature/contracts/presentation/pages/search_page.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/calendar.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/loading_state_widget.dart';
-import 'package:final_ibilling/feature/filter/presentation/pages/filter_page.dart';
-import 'package:final_ibilling/feature/contracts/presentation/pages/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,12 +32,12 @@ class _ContractPageState extends State<ContractPage> {
         title: Text("Contracts", style: context.titleLarge),
         actions: [
           IconButton(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterPage())),
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const FilterPage())),
             icon: SvgPicture.asset("assets/icons/Filter.svg"),
           ),
           const Text("|", style: TextStyle(color: Colors.white, fontSize: 20)),
           IconButton(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage())),
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SearchPage())),
             icon: const Icon(Icons.search, color: AppColors.white),
           ),
         ],

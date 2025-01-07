@@ -1,6 +1,3 @@
-
-
-
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +17,20 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
   bool isLoading = false;
   int currentPage = 1;
   final int itemsPerPage = 3;
+  bool isPaginationEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-    displayedList = widget.contracts.take(itemsPerPage).toList();
+
+    // Pagination faqat contractlar soni 12 tadan ko'p bo'lsa yoqiladi
+    isPaginationEnabled = widget.contracts.length >= 12;
+
+    // Agar pagination kerak bo'lsa, faqat birinchi sahifadagi elementlarni olamiz
+    displayedList =
+        isPaginationEnabled ? widget.contracts.take(itemsPerPage).toList() : widget.contracts; // Aks holda barcha contractlarni ko'rsatamiz
   }
 
   @override
@@ -37,7 +41,7 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isLoading) {
+    if (isPaginationEnabled && _scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isLoading) {
       _loadMoreItems();
     }
   }
@@ -45,7 +49,7 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
   Future<void> _loadMoreItems() async {
     setState(() => isLoading = true);
 
-    await Future.delayed(const Duration(milliseconds: 500)); // Simulate delay
+    await Future.delayed(const Duration(milliseconds: 500));
 
     final int startIndex = currentPage * itemsPerPage;
     final int endIndex = startIndex + itemsPerPage;
@@ -64,19 +68,25 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
   }
 
   Future<void> _onRefresh() async {
-    setState(() {
-      currentPage = 1;
-      displayedList = widget.contracts.take(itemsPerPage).toList();
-    });
+    setState(
+      () {
+        currentPage = 1;
+        displayedList = isPaginationEnabled ? widget.contracts.take(itemsPerPage).toList() : widget.contracts;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _onRefresh,
+      onRefresh: () async {
+        if (widget.contracts.length >= 12) {
+          _onRefresh();
+        }
+      },
       child: ListView.builder(
         controller: _scrollController,
-        itemCount: displayedList.length + (isLoading ? 1 : 0),
+        itemCount: displayedList.length + _loadingIndicatorCount(),
         itemBuilder: (context, index) {
           if (index < displayedList.length) {
             final contract = displayedList[index];
@@ -95,5 +105,9 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
         },
       ),
     );
+  }
+
+  int _loadingIndicatorCount() {
+    return isPaginationEnabled && isLoading ? 1 : 0;
   }
 }
