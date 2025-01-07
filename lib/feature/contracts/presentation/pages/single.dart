@@ -1,13 +1,17 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../assets/colors/app_colors.dart';
 import '../../../setting/common_widgets/main_button_widget.dart';
+import '../bloc/contract_bloc.dart';
 
 class Single extends StatefulWidget {
   const Single({super.key, required this.entity, required this.fullContracts});
@@ -20,7 +24,8 @@ class Single extends StatefulWidget {
 }
 
 class _SingleState extends State<Single> {
-  String number = "", paymentStatus = '';
+  String number = "",
+      paymentStatus = '';
   bool saved = false;
   List<ContractEntity> authorList = [];
 
@@ -73,7 +78,7 @@ class _SingleState extends State<Single> {
         ),
         actions: [
           IconButton(
-              // onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SavedScreen())),
+            // onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SavedScreen())),
               onPressed: () {},
               icon: SvgPicture.asset("assets/icons/outline_save.svg", color: saved ? Colors.white : Colors.grey)),
           const SizedBox(width: 10)
@@ -94,9 +99,16 @@ class _SingleState extends State<Single> {
               date: widget.entity.dateTime,
             ),
             10.verticalSpace,
-            SaveDelete(
-              save: () async {},
-              delete: () async {},
+            BlocBuilder<ContractBloc, ContractState>(
+              builder: (context, state) {
+                return SaveDelete(
+                  save: (){
+                    log("save func");
+                    context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
+                  },
+                  delete: () async {},
+                );
+              },
             ),
             10.verticalSpace,
             Align(
@@ -109,7 +121,7 @@ class _SingleState extends State<Single> {
                 children: [
                   ...List.generate(
                     authorList.length,
-                    (index) {
+                        (index) {
                       final model = authorList[index];
                       return ContractWidget(onTap: () {}, model: model);
                     },
@@ -148,7 +160,7 @@ class SaveDelete extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: MainButton(
-            onPressed: delete,
+            onPressed: save,
             // onPressed: () async {
             // if (widget.model.saved == false) {
             //   context.read<ContractBloc>().add(SaveContractEvent(contractId: widget.model.contractId!, authorName: widget.model.author!));

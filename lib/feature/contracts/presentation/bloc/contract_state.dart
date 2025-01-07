@@ -8,6 +8,7 @@ class ContractState extends Equatable {
   final List<ContractEntity> fullContract;
   final List<ContractEntity> filteredList;
   final List<ContractEntity> searchList;
+  final UserEntity user;
   final String errorMsg;
   final DateTime beginDate;
   final DateTime endDate;
@@ -16,6 +17,7 @@ class ContractState extends Equatable {
   ContractState({
     DateTime? beginDate,
     DateTime? endDate,
+    this.user = const UserEntity(contracts: [], fullName: "", id: ""),
     this.errorMsg = "",
     this.status = ContractStateStatus.initial,
     this.userList = const [],
@@ -36,6 +38,7 @@ class ContractState extends Equatable {
     List<ContractEntity>? filteredList,
     List<ContractEntity>? searchList,
     List<ContractEntity>? fullContract,
+    UserEntity? user,
     bool? paid,
     bool? inProcess,
     bool? rejectByPayme,
@@ -46,6 +49,7 @@ class ContractState extends Equatable {
       ContractState(
         beginDate: beginDate ?? this.beginDate,
         endDate: endDate ?? this.endDate,
+        user: user ?? this.user,
         paid: paid ?? this.paid,
         inProcess: inProcess ?? this.inProcess,
         rejectByIQ: rejectByIQ ?? this.rejectByIQ,
@@ -59,5 +63,5 @@ class ContractState extends Equatable {
       );
 
   @override
-  List<Object?> get props => [status, userList, filteredList, searchList, paid, inProcess, rejectByPayme, rejectByIQ, fullContract];
+  List<Object?> get props => [status, userList, filteredList, searchList, paid, inProcess, rejectByPayme, rejectByIQ, fullContract, user];
 }

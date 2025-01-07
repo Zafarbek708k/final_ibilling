@@ -6,6 +6,8 @@ import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart
 
 abstract class SavedRemoteDataSource {
   Future<List<ContractModel>> getSavedContracts({required String api});
+  Future<List<UserModel>> getAllSavedContract({required String api});
+
 }
 
 class SavedRemoteDataSourceImpl extends SavedRemoteDataSource {
@@ -18,6 +20,17 @@ class SavedRemoteDataSourceImpl extends SavedRemoteDataSource {
     Response response = await dio.get(api);
     if (response.statusCode == 200 || response.statusCode == 201) {
       List<ContractModel> list = contractModelFromJson(jsonEncode(response.data));
+      return list;
+    } else {
+      throw ServerException(statusCode: response.statusCode ?? 500, errorKey: "errorKey", errorMessage: "errorMessage");
+    }
+  }
+
+  @override
+  Future<List<UserModel>> getAllSavedContract({required String api})async{
+    Response response = await dio.get(api);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      List<UserModel> list = userModelFromJson(jsonEncode(response.data));
       return list;
     } else {
       throw ServerException(statusCode: response.statusCode ?? 500, errorKey: "errorKey", errorMessage: "errorMessage");

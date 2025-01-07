@@ -15,6 +15,5 @@ class ContractUseCase  extends UseCase<List<UserEntity>, NoParams>{
     log("contract use case return repo.getAllContractRepo");
     return await repo.getAllContractRepo();
   }
-
 }
 

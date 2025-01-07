@@ -4,6 +4,7 @@ import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_w
 import 'package:final_ibilling/feature/saved/presentation/bloc/saved_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../assets/colors/app_colors.dart';
 import '../../../contracts/presentation/widgets/loading_state_widget.dart';
@@ -53,17 +54,42 @@ class SavedSuccessStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
-      child: ListView(
-        children: [
-          ...List.generate(
-            contracts.length,
-            (index) {
-              final model = contracts[index];
-              return ContractWidget(onTap: (){}, model: model);
-            },
-          )
-        ],
+      child: RefreshIndicator(
+        onRefresh: () async {
+          context.read<SavedBloc>().loadData();
+        },
+        child: ListView(
+          children: [
+            (contracts.isEmpty) ? const EmptyUI() : const SizedBox.shrink(),
+            ...List.generate(
+              contracts.length,
+              (index) {
+                final model = contracts[index];
+                return ContractWidget(onTap: () {}, model: model);
+              },
+            )
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class EmptyUI extends StatelessWidget {
+  const EmptyUI({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 250),
+        SvgPicture.asset("assets/icons/empty_saved.svg"),
+        const SizedBox(height: 10),
+        const Text("No saved contracts", style: TextStyle(color: Color(0xffE7E7E7)))
+      ],
     );
   }
 }

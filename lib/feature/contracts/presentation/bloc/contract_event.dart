@@ -20,17 +20,29 @@ class ContractFilterEvent extends ContractEvent {
   List<Object?> get props => [];
 }
 
-class BeginDateSelectEvent extends ContractEvent{
+class BeginDateSelectEvent extends ContractEvent {
   final DateTime beginTime;
+
   const BeginDateSelectEvent({required this.beginTime});
 
   @override
   List<Object?> get props => [beginTime];
 }
-class EndDateSelectEvent extends ContractEvent{
+
+class EndDateSelectEvent extends ContractEvent {
   final DateTime endTime;
+
   const EndDateSelectEvent({required this.endTime});
 
   @override
   List<Object?> get props => [endTime];
+}
+
+class SaveContractEvent extends ContractEvent {
+  final ContractEntity contract;
+
+  const SaveContractEvent({required this.contract});
+
+  @override
+  List<Object?> get props => [];
 }

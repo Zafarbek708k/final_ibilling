@@ -108,8 +108,8 @@ class _FilterPageState extends State<FilterPage> {
             children: [
               MainButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    context.read<ContractBloc>().add(GetALlContractEvent());
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const MainWrap()));
+                    context.read<ContractBloc>().init();
                   },
                   title: "Cancel",
                   bcgC: const Color(0xff008F7F).withOpacity(0.5),

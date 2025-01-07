@@ -6,6 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/domain/usecases/contract_usecase.dart';
+import 'package:final_ibilling/feature/contracts/domain/usecases/save_contract_usecase.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../../../core/singletons/di/service_locator.dart';
 
@@ -14,6 +16,7 @@ part 'contract_state.dart';
 
 class ContractBloc extends Bloc<ContractEvent, ContractState> {
   final ContractUseCase _homeUseCase = ContractUseCase(repo: sl.call());
+  final SaveContractUseCase _saveContractUseCase = SaveContractUseCase(repository: sl.call());
 
   ContractBloc() : super(ContractState()) {
     on<ContractEvent>((event, emit) {});
@@ -21,7 +24,46 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
     on<ContractFilterEvent>((event, emit) => _contractFilterEvent(event, emit));
     on<BeginDateSelectEvent>((event, emit) => beginDateSelect(event, emit));
     on<EndDateSelectEvent>((event, emit) => endDateSelect(event, emit));
+    on<SaveContractEvent>((event, emit) => _saveContract(event, emit));
     init();
+  }
+
+  Future<void> _saveContract(SaveContractEvent event, Emitter<ContractState> emit) async {
+    emit(state.copyWith(status: ContractStateStatus.loading));
+    // stateda user mavjud va eventda userga tegishli contract mavjud uni o'chirib yangilab boshqatdan qo'shib qoyish kerak
+    final user = state.user;
+    debugPrint("state user contract length  => ${state.user.contracts.length}");
+    user.contracts.removeWhere((contracts) {
+      return contracts.contractId == event.contract.contractId;
+    });
+    debugPrint("state user contract length after deleting => ${state.user.contracts.length}");
+    final contract = ContractModel(
+      contractId: event.contract.contractId,
+      saved: true,
+      author: event.contract.author,
+      status: event.contract.status,
+      amount: event.contract.amount,
+      lastInvoice: event.contract.lastInvoice,
+      numberOfInvoice: event.contract.numberOfInvoice,
+      addressOrganization: event.contract.addressOrganization,
+      innOrganization: event.contract.innOrganization,
+      dateTime: event.contract.dateTime,
+    );
+    debugPrint("state user contract length after adding => ${state.user.contracts.length}");
+    user.contracts.add(contract);
+
+    final result = await _saveContractUseCase.call(UserModel(contracts: user.contracts, fullName: user.fullName, id: user.id));
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "error at Saved Contract func"));
+      },
+      (nothing) {
+        log("success");
+        emit(state.copyWith(status: ContractStateStatus.loaded));
+        init();
+      },
+    );
   }
 
   Future<void> _getAllContractEvent(GetALlContractEvent event, Emitter<ContractState> emit) async {
@@ -107,7 +149,9 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       (users) {
         final contracts = users.expand((user) => user.contracts as List<ContractModel>).toList();
         log("user count ${users.length} contracts count = ${contracts.length}");
-        emit(state.copyWith(status: ContractStateStatus.loaded, userList: users, filteredList: contracts, fullContract: contracts));
+        emit(
+          state.copyWith(status: ContractStateStatus.loaded, userList: users, filteredList: contracts, fullContract: contracts, user: users.first),
+        );
       },
     );
   }
