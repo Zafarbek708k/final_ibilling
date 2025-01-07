@@ -1,10 +1,11 @@
-import 'dart:ui';
+import 'dart:developer';
 
 import 'package:final_ibilling/core/utils/extention.dart';
+import 'package:final_ibilling/feature/new/presentation/bloc/add_new_contract_bloc.dart';
 import 'package:final_ibilling/feature/new/presentation/widgets/text_field.dart';
 import 'package:final_ibilling/feature/setting/common_widgets/main_button_widget.dart';
-import 'package:final_ibilling/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../assets/colors/app_colors.dart';
@@ -84,19 +85,15 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
               ],
               statusValue: personValue,
             ),
-
             10.verticalSpace,
             Text("Fresher's full name", style: context.titleMedium?.copyWith(color: AppColors.grayLighter)),
             TFWidget(controller: fNameCtrl),
-
             10.verticalSpace,
             Text("Address of the organization", style: context.titleMedium?.copyWith(color: AppColors.grayLighter)),
             TFWidget(controller: addressCtrl),
-
             10.verticalSpace,
             Text("Inn", style: context.titleMedium?.copyWith(color: AppColors.grayLighter)),
             TFWidget(controller: innController, type: TextInputType.number),
-
             10.verticalSpace,
             Text("Status of the contract", style: context.titleMedium?.copyWith(color: AppColors.grayLighter)),
             BuildCustomDropdown(
@@ -117,15 +114,39 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
               statusValue: statusValue,
             ),
             20.verticalSpace,
-
-            // bool active = (innController.text.isEmpty && fNameCtrl.text.isEmpty && addressCtrl.text.isEmpty && personValue == null && statusValue == null);
-            MainButton(
-              height: 55,
-              onPressed: () {},
-              title: "Save Contract",
-              bcgC: (innController.text.isEmpty && fNameCtrl.text.isEmpty && addressCtrl.text.isEmpty && personValue == null && statusValue == null)?
-              AppColors.greenDark.withOpacity(0.4) : AppColors.greenDark,
-              select: true,
+            BlocBuilder<AddNewContractBloc, AddNewContractState>(
+              builder: (context, state) {
+                final status = statusValue == "Paid"
+                    ? "paid"
+                    : statusValue == "In Progress"
+                        ? "inProgress"
+                        : statusValue == "Reject By IQ"
+                            ? "rejectByIQ"
+                            : "rejectByPayme";
+                return MainButton(
+                  height: 55,
+                  onPressed: () {
+                    log("presss");
+                    if (innController.text.isNotEmpty && fNameCtrl.text.isNotEmpty && addressCtrl.text.isNotEmpty) {
+                      log("onPress");
+                      context.read<AddNewContractBloc>().add(
+                            AddNewContractEvent(
+                              status: status,
+                              inn: innController.text.trim(),
+                              address: addressCtrl.text.trim(),
+                              context: context,
+                              clear: resetDropdownValues,
+                            ),
+                          );
+                    }
+                  },
+                  title: "Save Contract",
+                  bcgC: innController.text.isEmpty && fNameCtrl.text.isEmpty && addressCtrl.text.isEmpty
+                      ? AppColors.greenDark.withOpacity(0.4)
+                      : AppColors.greenDark,
+                  select: true,
+                );
+              },
             )
           ],
         ),

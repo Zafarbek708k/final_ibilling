@@ -5,6 +5,7 @@ import '../../domain/entities/contract_entity.dart';
 List<UserModel> userModelFromJson(String str) => List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));
 List<ContractModel> contractModelFromJson(String str) => List<ContractModel>.from(json.decode(str).map((x) => ContractModel.fromJson(x)));
 String userModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+UserModel oneUserModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 
 class UserModel extends UserEntity {
   const UserModel({required super.contracts, required super.fullName, required super.id});
@@ -30,9 +31,27 @@ class UserModel extends UserEntity {
     return {
       "id": id,
       "fullName": fullName,
-      "contracts": contracts.map((x) => (x as ContractModel).toJson()).toList(),
+      "contracts": contracts.map((contract) {
+        if (contract is ContractModel) {
+          return contract.toJson();
+        } else {
+          return ContractModel(
+            contractId: contract.contractId,
+            saved: contract.saved,
+            author: contract.author,
+            status: contract.status,
+            amount: contract.amount,
+            lastInvoice: contract.lastInvoice,
+            numberOfInvoice: contract.numberOfInvoice,
+            addressOrganization: contract.addressOrganization,
+            innOrganization: contract.innOrganization,
+            dateTime: contract.dateTime,
+          ).toJson();
+        }
+      }).toList(),
     };
   }
+
 
 }
 
