@@ -54,16 +54,13 @@ class _ContractPageState extends State<ContractPage> {
             return const Center(child: Text("load more item"));
           }
           if (state.status == ContractStateStatus.loaded) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: Column(
-                children: [
-                  16.verticalSpace,
-                  CustomCalendarWidget(pressData: () {}),
-                  10.verticalSpace,
-                  Expanded(child: ContractLoadedWidget(contracts: state.filteredList)),
-                ],
-              ),
+            return Column(
+              children: [
+                16.verticalSpace,
+                CustomCalendarWidget(pressData: () {}),
+                10.verticalSpace,
+                Expanded(child: ContractLoadedWidget(contracts: state.filteredList)),
+              ],
             );
           }
           return const SizedBox.shrink();

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
@@ -10,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../assets/colors/app_colors.dart';
+import '../../../../core/utils/utils_service.dart';
 import '../../../setting/common_widgets/main_button_widget.dart';
 import '../bloc/contract_bloc.dart';
 
@@ -24,8 +23,7 @@ class Single extends StatefulWidget {
 }
 
 class _SingleState extends State<Single> {
-  String number = "",
-      paymentStatus = '';
+  String number = "", paymentStatus = '';
   bool saved = false;
   List<ContractEntity> authorList = [];
 
@@ -78,8 +76,17 @@ class _SingleState extends State<Single> {
         ),
         actions: [
           IconButton(
-            // onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SavedScreen())),
-              onPressed: () {},
+              onPressed: () {
+                if (widget.entity.saved == true && widget.entity.author == "Zafarbek Karimov") {
+                  context.read<ContractBloc>().add(UnSaveContractEvent(contract: widget.entity));
+                  Navigator.pop(context);
+                } else if(widget.entity.saved == false && widget.entity.author == "Zafarbek Karimov"){
+                  context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
+                  Navigator.pop(context);
+                }else{
+                  Utils.fireSnackBar("This Data does not belong to you", context);
+                }
+              },
               icon: SvgPicture.asset("assets/icons/outline_save.svg", color: saved ? Colors.white : Colors.grey)),
           const SizedBox(width: 10)
         ],
@@ -102,11 +109,22 @@ class _SingleState extends State<Single> {
             BlocBuilder<ContractBloc, ContractState>(
               builder: (context, state) {
                 return SaveDelete(
-                  save: (){
-                    log("save func");
-                    context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
+                  save: () {
+                    if (widget.entity.saved == false && widget.entity.author == "Zafarbek Karimov") {
+                      context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
+                      Navigator.pop(context);
+                    } else {
+                      Utils.fireSnackBar("Already saved this data or This Data does not belong to you", context);
+                    }
                   },
-                  delete: () async {},
+                  delete: () async {
+                    if (widget.entity.author == "Zafarbek Karimov") {
+                      context.read<ContractBloc>().add(DeleteContractEvent(contract: widget.entity));
+                      Navigator.pop(context);
+                    } else {
+                      Utils.fireSnackBar("This Data does not belong to you", context);
+                    }
+                  },
                 );
               },
             ),
@@ -121,7 +139,7 @@ class _SingleState extends State<Single> {
                 children: [
                   ...List.generate(
                     authorList.length,
-                        (index) {
+                    (index) {
                       final model = authorList[index];
                       return ContractWidget(onTap: () {}, model: model);
                     },
@@ -148,9 +166,6 @@ class SaveDelete extends StatelessWidget {
         Expanded(
           child: MainButton(
             onPressed: delete,
-            // onPressed: () {
-            //   // context.read<ContractBloc>().add(DeleteContractEvent(contractId: widget.model.contractId!, authorName: widget.model.author!));
-            // },
             title: "Delete contract",
             bcgC: Colors.red.withOpacity(0.3),
             textC: Colors.red,
@@ -161,13 +176,6 @@ class SaveDelete extends StatelessWidget {
         Expanded(
           child: MainButton(
             onPressed: save,
-            // onPressed: () async {
-            // if (widget.model.saved == false) {
-            //   context.read<ContractBloc>().add(SaveContractEvent(contractId: widget.model.contractId!, authorName: widget.model.author!));
-            // } else {
-            //   Utils.fireSnackBar("Already saved this data", context);
-            // }
-            // },
             title: "Save contract",
             bcgC: AppColors.greenDark.withOpacity(0.3),
             textC: AppColors.greenDark,

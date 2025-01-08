@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -6,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/domain/usecases/contract_usecase.dart';
+import 'package:final_ibilling/feature/contracts/domain/usecases/delete_contract_usecase.dart';
 import 'package:final_ibilling/feature/contracts/domain/usecases/save_contract_usecase.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -17,6 +19,7 @@ part 'contract_state.dart';
 class ContractBloc extends Bloc<ContractEvent, ContractState> {
   final ContractUseCase _homeUseCase = ContractUseCase(repo: sl.call());
   final SaveContractUseCase _saveContractUseCase = SaveContractUseCase(repository: sl.call());
+  final DeleteContractUseCase _deleteContractUseCase = DeleteContractUseCase(repository: sl.call());
 
   ContractBloc() : super(ContractState()) {
     on<ContractEvent>((event, emit) {});
@@ -25,6 +28,86 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
     on<BeginDateSelectEvent>((event, emit) => beginDateSelect(event, emit));
     on<EndDateSelectEvent>((event, emit) => endDateSelect(event, emit));
     on<SaveContractEvent>((event, emit) => _saveContract(event, emit));
+    on<UnSaveContractEvent>((event, emit) => _unSaveContract(event, emit));
+    on<DeleteContractEvent>((event, emit) => _deleteContract(event, emit));
+    on<SearchEvent>((event, emit) => _searchEvent(event, emit));
+    init();
+  }
+
+  Future<void> _searchEvent(SearchEvent event, Emitter<ContractState> emit) async {
+    emit(state.copyWith(status: ContractStateStatus.loading));
+
+    final fullList = state.fullContract;
+
+    if (event.text == null || event.text.trim().isEmpty) {
+      emit(state.copyWith(status: ContractStateStatus.loaded, searchList: fullList));
+      return;
+    }
+
+    final searchText = event.text.trim().toLowerCase();
+
+    final searchList = fullList.where((contract) {
+      return contract.author.toLowerCase().contains(searchText);
+    }).toList();
+
+    log("searchList length => ${searchList.length} full list=> ${fullList.length}");
+
+    emit(state.copyWith(status: ContractStateStatus.loaded, searchList: searchList));
+  }
+
+  Future<void> _deleteContract(DeleteContractEvent event, Emitter<ContractState> emit) async {
+    emit(state.copyWith(status: ContractStateStatus.loading));
+    final user = state.user;
+    user.contracts.removeWhere((contracts) {
+      return contracts.contractId == event.contract.contractId;
+    });
+    final result = await _deleteContractUseCase.call(UserModel(contracts: user.contracts, fullName: user.fullName, id: user.id));
+    result.fold(
+      (failure) {
+        emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "Something went wrong"));
+      },
+      (nothing) {
+        init();
+      },
+    );
+  }
+
+  Future<void> _unSaveContract(UnSaveContractEvent event, Emitter<ContractState> emit) async {
+    emit(state.copyWith(status: ContractStateStatus.loading));
+    // stateda user mavjud va eventda userga tegishli contract mavjud uni o'chirib yangilab boshqatdan qo'shib qoyish kerak
+    final user = state.user;
+    debugPrint("state user contract length  => ${state.user.contracts.length}");
+    user.contracts.removeWhere((contracts) {
+      return contracts.contractId == event.contract.contractId;
+    });
+    debugPrint("state user contract length after deleting => ${state.user.contracts.length}");
+    final contract = ContractModel(
+      contractId: event.contract.contractId,
+      saved: false,
+      author: event.contract.author,
+      status: event.contract.status,
+      amount: event.contract.amount,
+      lastInvoice: event.contract.lastInvoice,
+      numberOfInvoice: event.contract.numberOfInvoice,
+      addressOrganization: event.contract.addressOrganization,
+      innOrganization: event.contract.innOrganization,
+      dateTime: event.contract.dateTime,
+    );
+    debugPrint("state user contract length after adding => ${state.user.contracts.length}");
+    user.contracts.add(contract);
+
+    final result = await _saveContractUseCase.call(UserModel(contracts: user.contracts, fullName: user.fullName, id: user.id));
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "error at Saved Contract func"));
+      },
+      (nothing) {
+        log("success");
+        emit(state.copyWith(status: ContractStateStatus.loaded));
+      },
+    );
+
     init();
   }
 
@@ -61,9 +144,10 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       (nothing) {
         log("success");
         emit(state.copyWith(status: ContractStateStatus.loaded));
-        init();
       },
     );
+
+    init();
   }
 
   Future<void> _getAllContractEvent(GetALlContractEvent event, Emitter<ContractState> emit) async {
@@ -130,11 +214,15 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   void beginDateSelect(BeginDateSelectEvent event, Emitter<ContractState> emit) {
-    emit(state.copyWith(beginDate: event.beginTime));
+    emit(state.copyWith(status: ContractStateStatus.loading));
+    Timer(const Duration(milliseconds: 200), () {});
+    emit(state.copyWith(beginDate: event.beginTime, status: ContractStateStatus.loaded));
   }
 
   void endDateSelect(EndDateSelectEvent event, Emitter<ContractState> emit) {
-    emit(state.copyWith(endDate: event.endTime));
+    emit(state.copyWith(status: ContractStateStatus.loading));
+    Timer(const Duration(milliseconds: 200), () {});
+    emit(state.copyWith(endDate: event.endTime, status: ContractStateStatus.loaded));
   }
 
   void init() async {
@@ -154,14 +242,6 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
         );
       },
     );
-  }
-
-  void search(String text) {
-    final list = state.filteredList;
-    final searchList = list.where((contract) {
-      return contract.author.toString().toLowerCase().contains(text.toLowerCase());
-    }).toList();
-    emit(state.copyWith(searchList: searchList));
   }
 
   void clear() {

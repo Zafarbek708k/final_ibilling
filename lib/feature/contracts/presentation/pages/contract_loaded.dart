@@ -57,10 +57,12 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
 
     if (startIndex < widget.contracts.length) {
       setState(() {
-        displayedList.addAll(widget.contracts.sublist(
-          startIndex,
-          endIndex > widget.contracts.length ? widget.contracts.length : endIndex,
-        ));
+        displayedList.addAll(
+          widget.contracts.sublist(
+            startIndex,
+            endIndex > widget.contracts.length ? widget.contracts.length : endIndex,
+          ),
+        );
         currentPage++;
       });
     }
@@ -85,27 +87,30 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
           _onRefresh();
         }
       },
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: displayedList.length + _loadingIndicatorCount(),
-        itemBuilder: (context, index) {
-          if (index < displayedList.length) {
-            final contract = displayedList[index];
-            return ContractWidget(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Single(entity: contract, fullContracts: displayedList)));
-              },
-              model: contract,
-            );
-          } else {
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: displayedList.length + _loadingIndicatorCount(),
+          itemBuilder: (context, index) {
+            if (index < displayedList.length) {
+              final contract = displayedList[index];
+              return ContractWidget(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Single(entity: contract, fullContracts: displayedList)));
+                },
+                model: contract,
+              );
+            } else {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

@@ -8,8 +8,12 @@ import 'package:flutter/cupertino.dart';
 
 abstract class ContractsRemoteDataSource {
   Future<List<UserModel>> getAllContract({required String api, Map<String, String>? query});
+
   Future<UserModel> getOneUserData({required String api});
+
   Future<void> saveContract({required String api, required Map<String, dynamic> data});
+
+  Future<void> deleteContract({required String api, required Map<String, dynamic> data});
 }
 
 class ContractsRemoteDataSourceImpl extends ContractsRemoteDataSource {
@@ -30,22 +34,32 @@ class ContractsRemoteDataSourceImpl extends ContractsRemoteDataSource {
   }
 
   @override
-  Future<UserModel> getOneUserData({required String api})async{
+  Future<UserModel> getOneUserData({required String api}) async {
     final r = await dio.get("$api/1");
-    if(r.statusCode == 200 || r.statusCode == 201){
+    if (r.statusCode == 200 || r.statusCode == 201) {
       final user = oneUserModelFromJson(jsonEncode(r.data));
       return user;
-    }else{
+    } else {
       throw ServerException(statusCode: r.statusCode ?? 500, errorKey: "errorKey", errorMessage: "errorMessage");
     }
   }
 
   @override
-  Future<void> saveContract({required String api, required Map<String, dynamic> data}) async{
+  Future<void> saveContract({required String api, required Map<String, dynamic> data}) async {
     final r = await dio.put("$api/1", data: data);
-    if(r.statusCode == 200 || r.statusCode == 201){
+    if (r.statusCode == 200 || r.statusCode == 201) {
       debugPrint("Successfully save Contract");
-    }else{
+    } else {
+      throw ServerException(statusCode: r.statusCode ?? 500, errorKey: "errorKey", errorMessage: "errorMessage");
+    }
+  }
+
+  @override
+  Future<void> deleteContract({required String api, required Map<String, dynamic> data}) async {
+    final r = await dio.put("$api/1", data: data);
+    if (r.statusCode == 200 || r.statusCode == 201) {
+      debugPrint("Successfully save Contract");
+    } else {
       throw ServerException(statusCode: r.statusCode ?? 500, errorKey: "errorKey", errorMessage: "errorMessage");
     }
   }

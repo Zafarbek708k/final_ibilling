@@ -61,4 +61,19 @@ class ContractRepositoryImpl extends ContractRepository {
       return const Left(DioFailure(""));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> delete({required UserModel user}) async{
+    try {
+      final value = await dataSource.deleteContract(api: Consts.apiContracts, data: user.toJson());
+      log("success saveContract func");
+      return Right(value);
+    } on ServerException {
+      log("error getAllContractRepo func server exception");
+      return const Left(ServerFailure("Something went wrong"));
+    } on DioException {
+      log("error getAllContractRepo func Dio exception");
+      return const Left(DioFailure(""));
+    }
+  }
 }

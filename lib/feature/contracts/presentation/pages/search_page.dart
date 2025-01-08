@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/presentation/bloc/contract_bloc.dart';
@@ -30,7 +32,11 @@ class _SearchPageState extends State<SearchPage> {
         automaticallyImplyLeading: true,
         title: TextField(
           controller: _controller,
-          onChanged: (value) => context.read<ContractBloc>().search(value),
+          onChanged: (value){
+            log("on change => value $value");
+            // context.read<ContractBloc>().add(SearchEvent(text: value));
+            context.read<ContractBloc>().add(SearchEvent(text: _controller.text.trim()));
+          },
           cursorColor: Colors.white,
           decoration: const InputDecoration(
             hintText: "Search...",
@@ -39,10 +45,14 @@ class _SearchPageState extends State<SearchPage> {
             disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.darkGray)),
           ),
         ),
-        actions: [IconButton(onPressed: () {
-          _controller.clear();
-          context.read<ContractBloc>().clear();
-        }, icon: const Icon(Icons.clear, color: Colors.white))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                _controller.clear();
+                context.read<ContractBloc>().clear();
+              },
+              icon: const Icon(Icons.clear, color: Colors.white))
+        ],
       ),
       body: BlocBuilder<ContractBloc, ContractState>(
         builder: (context, state) {

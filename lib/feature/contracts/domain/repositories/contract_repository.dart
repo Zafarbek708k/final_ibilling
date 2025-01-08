@@ -10,4 +10,5 @@ abstract class ContractRepository{
   Future<Either<Failure, List<UserEntity>>> getAllContractRepo();
   Future<Either<Failure, UserEntity>> getUserData();
   Future<Either<Failure, void>>saveContract({required UserModel user});
+  Future<Either<Failure, void>>delete({required UserModel user});
 }
