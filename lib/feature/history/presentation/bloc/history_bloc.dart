@@ -25,8 +25,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   Future<void> _filterEvent() async {
     emit(state.copyWith(status: HistoryStateStatus.loading));
     final list = state.contracts;
-    final DateTime? startTime = state.startTime;
-    final DateTime? endTime = state.endTime;
+    final startTime = state.startTime;
+    final endTime = state.endTime;
     final dateFormat = DateFormat("HH:mm, d MMMM, yyyy");
 
     log("start time = $startTime  \n endTime = $endTime \n list count = ${list.length} state list count => ${state.contracts.length}");
@@ -42,7 +42,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
       // Case 1: Both startTime and endTime are not null
       if (startTime != null && endTime != null) {
-        return contractDateTime.isAfter(startTime) && contractDateTime.isBefore(endTime);
+        log("message");
+        return contractDateTime.isAfter(endTime) && contractDateTime.isBefore(startTime);
       }
 
       // Case 2: Only startTime is not null

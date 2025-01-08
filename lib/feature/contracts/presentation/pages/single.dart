@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
@@ -78,9 +80,11 @@ class _SingleState extends State<Single> {
           IconButton(
               onPressed: () {
                 if (widget.entity.saved == true && widget.entity.author == "Zafarbek Karimov") {
+                  log("unsave func");
                   context.read<ContractBloc>().add(UnSaveContractEvent(contract: widget.entity));
                   Navigator.pop(context);
                 } else if(widget.entity.saved == false && widget.entity.author == "Zafarbek Karimov"){
+                  log("Save func");
                   context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
                   Navigator.pop(context);
                 }else{

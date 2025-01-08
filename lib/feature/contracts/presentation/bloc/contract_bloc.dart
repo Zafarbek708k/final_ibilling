@@ -73,8 +73,8 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   Future<void> _unSaveContract(UnSaveContractEvent event, Emitter<ContractState> emit) async {
+    log("unSave func bloc");
     emit(state.copyWith(status: ContractStateStatus.loading));
-    // stateda user mavjud va eventda userga tegishli contract mavjud uni o'chirib yangilab boshqatdan qo'shib qoyish kerak
     final user = state.user;
     debugPrint("state user contract length  => ${state.user.contracts.length}");
     user.contracts.removeWhere((contracts) {
@@ -112,8 +112,8 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   Future<void> _saveContract(SaveContractEvent event, Emitter<ContractState> emit) async {
+    log("save func bloc");
     emit(state.copyWith(status: ContractStateStatus.loading));
-    // stateda user mavjud va eventda userga tegishli contract mavjud uni o'chirib yangilab boshqatdan qo'shib qoyish kerak
     final user = state.user;
     debugPrint("state user contract length  => ${state.user.contracts.length}");
     user.contracts.removeWhere((contracts) {

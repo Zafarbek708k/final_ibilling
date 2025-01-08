@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
           child: BlocBuilder<LocalizationCubit, Locale>(
             builder: (context, locale) {
               return MaterialApp(
+                debugShowCheckedModeBanner: false,
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: locale,
