@@ -126,9 +126,7 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
                 return MainButton(
                   height: 55,
                   onPressed: () {
-                    log("presss");
                     if (innController.text.isNotEmpty && fNameCtrl.text.isNotEmpty && addressCtrl.text.isNotEmpty) {
-                      log("onPress");
                       context.read<AddNewContractBloc>().add(
                             AddNewContractEvent(
                               status: status,
