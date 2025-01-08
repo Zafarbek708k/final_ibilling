@@ -1,5 +1,6 @@
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
+import 'package:final_ibilling/feature/contracts/presentation/pages/single.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
 import 'package:final_ibilling/feature/saved/presentation/bloc/saved_bloc.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,13 @@ class SavedPage extends StatefulWidget {
 }
 
 class _SavedPageState extends State<SavedPage> {
+
+  @override
+  void didChangeDependencies() {
+    debugPrint("did change dependency");
+    context.read<SavedBloc>().loadData();
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +38,7 @@ class _SavedPageState extends State<SavedPage> {
       ),
       body: BlocBuilder<SavedBloc, SavedState>(
         builder: (context, state) {
+          debugPrint("Saved State status=> ${state.status}");
           if (state.status == SavedStateStatus.loading) {
             return const LoadingStateWidget();
           } else if (state.status == SavedStateStatus.error) {
@@ -65,7 +74,11 @@ class SavedSuccessStateWidget extends StatelessWidget {
               contracts.length,
               (index) {
                 final model = contracts[index];
-                return ContractWidget(onTap: () {}, model: model);
+                return ContractWidget(
+                  key: UniqueKey(),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Single(entity: model, fullContracts: contracts))),
+                  model: model,
+                );
               },
             )
           ],

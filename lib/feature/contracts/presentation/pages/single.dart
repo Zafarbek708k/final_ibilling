@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
+import 'package:final_ibilling/feature/saved/presentation/bloc/saved_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,17 +80,21 @@ class _SingleState extends State<Single> {
         actions: [
           IconButton(
               onPressed: () {
-                if (widget.entity.saved == true && widget.entity.author == "Zafarbek Karimov") {
+                if (saved == true && widget.entity.author == "Zafarbek Karimov") {
                   log("unsave func");
+                  saved = false;
                   context.read<ContractBloc>().add(UnSaveContractEvent(contract: widget.entity));
-                  Navigator.pop(context);
-                } else if(widget.entity.saved == false && widget.entity.author == "Zafarbek Karimov"){
+                  context.read<SavedBloc>().loadData();
+                } else if (saved == false && widget.entity.author == "Zafarbek Karimov") {
                   log("Save func");
+                  saved = true;
                   context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
-                  Navigator.pop(context);
-                }else{
+                  context.read<SavedBloc>().loadData();
+                } else {
                   Utils.fireSnackBar("This Data does not belong to you", context);
                 }
+                context.read<SavedBloc>().loadData();
+                setState(() {});
               },
               icon: SvgPicture.asset("assets/icons/outline_save.svg", color: saved ? Colors.white : Colors.grey)),
           const SizedBox(width: 10)
@@ -114,20 +119,26 @@ class _SingleState extends State<Single> {
               builder: (context, state) {
                 return SaveDelete(
                   save: () {
-                    if (widget.entity.saved == false && widget.entity.author == "Zafarbek Karimov") {
+                    if (saved == false && widget.entity.author == "Zafarbek Karimov") {
+                      saved = true;
+                      setState(() {});
                       context.read<ContractBloc>().add(SaveContractEvent(contract: widget.entity));
-                      Navigator.pop(context);
                     } else {
                       Utils.fireSnackBar("Already saved this data or This Data does not belong to you", context);
                     }
+
+                    context.read<SavedBloc>().loadData();
                   },
                   delete: () async {
                     if (widget.entity.author == "Zafarbek Karimov") {
                       context.read<ContractBloc>().add(DeleteContractEvent(contract: widget.entity));
+
                       Navigator.pop(context);
                     } else {
                       Utils.fireSnackBar("This Data does not belong to you", context);
                     }
+
+                    context.read<SavedBloc>().loadData();
                   },
                 );
               },
@@ -226,7 +237,7 @@ class ContractCard extends StatelessWidget {
               ],
             ),
             5.verticalSpace,
-            Row(
+            Wrap(
               children: [
                 Text("Status of the contract: ", style: context.bodyMedium?.copyWith(color: const Color(0xffE7E7E7))),
                 Text("$status ", style: context.bodyMedium?.copyWith(color: const Color(0xff999999))),

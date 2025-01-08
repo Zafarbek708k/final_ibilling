@@ -236,7 +236,14 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       },
       (users) {
         final contracts = users.expand((user) => user.contracts as List<ContractModel>).toList();
-        log("user count ${users.length} contracts count = ${contracts.length}");
+        final dateFormat = DateFormat('HH:mm, d MMMM, yyyy');
+
+        contracts.sort((a, b) {
+          final dateA = dateFormat.parse(a.dateTime);
+          final dateB = dateFormat.parse(b.dateTime);
+          return dateB.compareTo(dateA);
+        });
+
         emit(
           state.copyWith(status: ContractStateStatus.loaded, userList: users, filteredList: contracts, fullContract: contracts, user: users.first),
         );

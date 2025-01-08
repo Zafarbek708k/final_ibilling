@@ -1,10 +1,10 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/core/singletons/di/service_locator.dart';
 import 'package:final_ibilling/core/usecases/usecase.dart';
+import 'package:final_ibilling/core/utils/utils_service.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/new/domain/usecases/add_new_contract_usecase.dart';
@@ -15,7 +15,7 @@ part 'add_new_contract_event.dart';
 part 'add_new_contract_state.dart';
 
 class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> {
-  final  _getUsers = GetUserDataUseCase(repo: sl.call());
+  final _getUsers = GetUserDataUseCase(repo: sl.call());
   final _updateUser = AddNewContractUseCase(repo: sl.call());
 
   AddNewContractBloc() : super(const AddNewContractState()) {
@@ -57,7 +57,7 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
   Future<void> _createNewContract(AddNewContractEvent event, Emitter<AddNewContractState> emit) async {
     debugPrint("loading _createNewContract");
     debugPrint("state user contracts length 1 chi => ${state.user.contracts.length}");
-    state.copyWith(status: AddNewContractStateStatus.loading);
+    emit(state.copyWith(status: AddNewContractStateStatus.loading));
     String month = monthChecker(DateTime.now().month);
     final userContracts = [...state.user.contracts];
     debugPrint("state user contracts length 2 chi => ${state.user.contracts.length}");
@@ -76,16 +76,17 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
     );
     userContracts.add(oneContract);
     debugPrint("all contracts updated ${userContracts.length}   username ${state.user.fullName}");
-    final user  = UserModel(contracts: userContracts, fullName: state.user.fullName, id: state.user.id);
+    final user = UserModel(contracts: userContracts, fullName: state.user.fullName, id: state.user.id);
 
     final result = await _updateUser.call(user);
     result.fold(
       (failure) {
-        state.copyWith(status: AddNewContractStateStatus.error, errorMsg: "Something went wrong");
+        emit(state.copyWith(status: AddNewContractStateStatus.error, errorMsg: "Something went wrong"));
       },
       (nothing) {
         event.clear();
-        state.copyWith(status: AddNewContractStateStatus.loaded);
+        Utils.fireSnackBar("Successfully created new contract", event.context);
+        emit(state.copyWith(status: AddNewContractStateStatus.loaded));
       },
     );
   }
@@ -100,7 +101,7 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
       (user) {
         debugPrint("user name = ${user.fullName}");
         debugPrint("user contracts length = ${user.contracts.length}");
-        emit( state.copyWith(status: AddNewContractStateStatus.loaded, user: user));
+        emit(state.copyWith(status: AddNewContractStateStatus.loaded, user: user));
       },
     );
   }

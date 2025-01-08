@@ -2,6 +2,9 @@ import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity
 import 'package:final_ibilling/feature/contracts/presentation/pages/single.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/contract_bloc.dart';
 
 class ContractLoadedWidget extends StatefulWidget {
   const ContractLoadedWidget({super.key, required this.contracts});
@@ -85,6 +88,7 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
       onRefresh: () async {
         if (widget.contracts.length >= 12) {
           _onRefresh();
+          context.read<ContractBloc>().init();
         }
       },
       child: Padding(

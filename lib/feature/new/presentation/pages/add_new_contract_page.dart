@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/new/presentation/bloc/add_new_contract_bloc.dart';
 import 'package:final_ibilling/feature/new/presentation/widgets/text_field.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../assets/colors/app_colors.dart';
+import '../../../contracts/presentation/bloc/contract_bloc.dart';
 import '../widgets/build_custom_dropdown.dart';
 
 class AddNewContractPage extends StatefulWidget {
@@ -123,27 +122,42 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
                         : statusValue == "Reject By IQ"
                             ? "rejectByIQ"
                             : "rejectByPayme";
-                return MainButton(
-                  height: 55,
-                  onPressed: () {
-                    if (innController.text.isNotEmpty && fNameCtrl.text.isNotEmpty && addressCtrl.text.isNotEmpty) {
-                      context.read<AddNewContractBloc>().add(
-                            AddNewContractEvent(
-                              status: status,
-                              inn: innController.text.trim(),
-                              address: addressCtrl.text.trim(),
-                              context: context,
-                              clear: resetDropdownValues,
-                            ),
-                          );
-                    }
-                  },
-                  title: "Save Contract",
-                  bcgC: innController.text.isEmpty && fNameCtrl.text.isEmpty && addressCtrl.text.isEmpty
-                      ? AppColors.greenDark.withOpacity(0.4)
-                      : AppColors.greenDark,
-                  select: true,
-                );
+                if (state.status == AddNewContractStateStatus.loading) {
+                  return MaterialButton(
+                    minWidth: double.infinity,
+                    height: 55,
+                    color: AppColors.greenLight,
+                    onPressed: () {},
+                    child: const CircularProgressIndicator(),
+                  );
+                }
+                if (state.status == AddNewContractStateStatus.loaded) {
+                  return MainButton(
+                    height: 55,
+                    onPressed: () {
+                      if (innController.text.isNotEmpty && fNameCtrl.text.isNotEmpty && addressCtrl.text.isNotEmpty) {
+                        context.read<AddNewContractBloc>().add(
+                              AddNewContractEvent(
+                                status: status,
+                                inn: innController.text.trim(),
+                                address: addressCtrl.text.trim(),
+                                context: context,
+                                clear: resetDropdownValues,
+                              ),
+                            );
+
+                        context.read<ContractBloc>().init();
+                      }
+                    },
+                    title: "Save Contract",
+                    bcgC: innController.text.isEmpty && fNameCtrl.text.isEmpty && addressCtrl.text.isEmpty
+                        ? AppColors.greenDark.withOpacity(0.4)
+                        : AppColors.greenDark,
+                    select: true,
+                  );
+                } else {
+                  return MainButton(onPressed: () {}, title: "Save Contract", bcgC: AppColors.greenLight, select: true);
+                }
               },
             )
           ],
