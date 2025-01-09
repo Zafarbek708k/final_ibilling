@@ -1,7 +1,6 @@
 part of 'contract_bloc.dart';
 
-enum ContractStateStatus { initial, loading, loaded, error}
-
+enum ContractStateStatus { initial, loading, loaded, error }
 
 class ContractState extends Equatable {
   final ContractStateStatus status;
@@ -64,5 +63,6 @@ class ContractState extends Equatable {
       );
 
   @override
-  List<Object?> get props => [status, userList, filteredList, searchList, paid, inProcess, rejectByPayme, rejectByIQ, fullContract, user];
+  List<Object?> get props =>
+      [status, userList, filteredList, searchList, paid, inProcess, rejectByPayme, rejectByIQ, fullContract, user, beginDate, endDate, errorMsg];
 }

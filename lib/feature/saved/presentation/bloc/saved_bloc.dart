@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/core/usecases/usecase.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
-import 'package:final_ibilling/feature/contracts/presentation/bloc/contract_bloc.dart';
 import 'package:final_ibilling/feature/saved/domain/usecases/delete_usecase.dart';
 import 'package:final_ibilling/feature/saved/domain/usecases/save_usecase.dart';
 import 'package:final_ibilling/feature/saved/domain/usecases/unsave_usecase.dart';
@@ -15,7 +14,6 @@ import '../../../../core/singletons/di/service_locator.dart';
 import '../../domain/usecases/get_saved_contracts.dart';
 
 part 'saved_event.dart';
-
 part 'saved_state.dart';
 
 class SavedBloc extends Bloc<SavedEvent, SavedState> {
@@ -34,10 +32,11 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
 
   Future<void> _delete(Delete event, Emitter<SavedState> emit) async {
     emit(state.copyWith(status: SavedStateStatus.loading));
+    Timer(const Duration(seconds: 4), () => debugPrint("wait 4 sec, state status => ${state.status}"));
     final updatedContracts = List.of(state.user.contracts)..removeWhere((contract) => contract.contractId == event.contract.contractId);
     final updatedUser = UserModel(contracts: updatedContracts, fullName: state.user.fullName, id: state.user.id);
     final result = await _deleteUseCase.call(updatedUser);
-    emit(state.copyWith(status: SavedStateStatus.loading));
+    debugPrint("Stateeeee statusss => ${state.status}");
     result.fold(
       (failure) => emit(state.copyWith(status: SavedStateStatus.error, errorMsg: failure.message)),
       (success) {

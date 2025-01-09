@@ -119,7 +119,10 @@ class _SaveDetailState extends State<Single> {
             BlocBuilder<SavedBloc, SavedState>(
               builder: (context, state) {
                 if (state.status == SavedStateStatus.loading) {
-                  return const LoadingStateWidget();
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    child: Center(child: LinearProgressIndicator()),
+                  );
                 } else if (state.status == SavedStateStatus.error) {
                   return ErrorStateWidget(errorMsg: state.errorMsg);
                 } else if (state.status == SavedStateStatus.loaded) {
@@ -128,6 +131,7 @@ class _SaveDetailState extends State<Single> {
                       if (saved == false && widget.contract.author == "Zafarbek Karimov") {
                         context.read<SavedBloc>().add(Save(contract: widget.contract));
                         context.read<ContractBloc>().add(ReloadEvent());
+                        setState(() => saved = true);
                       } else {
                         Utils.fireSnackBar("Already saved this data or This Data does not belong to you", context);
                       }
@@ -135,10 +139,8 @@ class _SaveDetailState extends State<Single> {
                     delete: () {
                       if (widget.contract.author == "Zafarbek Karimov") {
                         context.read<SavedBloc>().add(Delete(contract: widget.contract, context: context));
-                        if (state.status == SavedStateStatus.loaded) {
-                          context.read<ContractBloc>().add(ReloadEvent());
-                          Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
-                        }
+                        context.read<ContractBloc>().add(ReloadEvent());
+                        Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
                       } else {
                         Utils.fireSnackBar("You can not delete others contracts", context);
                       }

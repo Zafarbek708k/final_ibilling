@@ -1,6 +1,6 @@
 part of 'saved_bloc.dart';
 
-enum SavedStateStatus { init, loading, loaded, error }
+enum SavedStateStatus { init, loading, loaded, error}
 
 class SavedState extends Equatable {
   final List<ContractEntity> contracts;
@@ -37,5 +37,5 @@ class SavedState extends Equatable {
       );
 
   @override
-  List<Object?> get props => [contracts, errorMsg, users, user];
+  List<Object?> get props => [contracts, errorMsg, users, user, status, savedContracts];
 }
