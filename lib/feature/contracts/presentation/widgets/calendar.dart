@@ -23,7 +23,7 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
       } else {
         currentMonth--;
       }
-      selectedDay = null; // Reset selected day when month changes
+      selectedDay = null;
     });
   }
 
@@ -47,7 +47,6 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Top Section: Month and Year with navigation buttons
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Row(
@@ -96,24 +95,13 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          day['dayName'],
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                        Text(day['dayName']),
                         const SizedBox(height: 5),
-                        Text(
-                          day['day'].toString(),
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                        Text(day['day'].toString()),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 18.0, right: 18, top: 5),
+                          child: Divider(color: Colors.white, height: 2, thickness: 4),
                         ),
-                        if (isSelected)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 18.0, right: 18, top: 5),
-                            child: Divider(
-                              color: Colors.white,
-                              height: 2,
-                              thickness: 4,
-                            ),
-                          ),
                       ],
                     ),
                   ),
