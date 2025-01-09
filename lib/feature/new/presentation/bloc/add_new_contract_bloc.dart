@@ -72,7 +72,7 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
       },
     );
 
-    event.context.read<ContractBloc>().add(const ContractEvent());
+    event.context.read<ContractBloc>().add(ReloadEvent());
   }
 
   Future<void> _getUsersData() async {

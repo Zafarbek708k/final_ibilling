@@ -53,6 +53,7 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
     final index = contracts.indexWhere((contract) => contract.contractId == event.contract.contractId);
 
     if (index != -1) {
+      debugPrint("save");
       contracts[index] = ContractModel(
         contractId: event.contract.contractId,
         saved: true,
@@ -83,6 +84,7 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
     final index = contracts.indexWhere((contract) => contract.contractId == event.contract.contractId);
 
     if (index != -1) {
+      debugPrint("un save");
       contracts[index] = ContractModel(
         contractId: event.contract.contractId,
         saved: false,

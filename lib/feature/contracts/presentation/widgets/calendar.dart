@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomCalendarWidget extends StatefulWidget {
   const CustomCalendarWidget({super.key, required this.onDateSelected});
+
   final Function({required DateTime date}) onDateSelected;
 
   @override
@@ -80,10 +81,7 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
 
                 return GestureDetector(
                   onTap: () {
-                    setState(() {
-                      selectedDay = day['day'];
-                    });
-                    // Pass the selected date to the callback
+                    setState(() => selectedDay = day['day']);
                     widget.onDateSelected(date: day['date']);
                   },
                   child: Container(
@@ -92,9 +90,7 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
                     decoration: BoxDecoration(
                       color: isSelected ? Colors.teal : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
-                      border: isSelected
-                          ? Border.all(color: Colors.tealAccent, width: 2)
-                          : null,
+                      border: isSelected ? Border.all(color: Colors.tealAccent, width: 2) : null,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -163,4 +159,3 @@ class CalendarUtils {
     });
   }
 }
-

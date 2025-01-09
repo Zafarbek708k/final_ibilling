@@ -84,8 +84,10 @@ class _SaveDetailState extends State<Single> {
               onPressed: () {
                 if (saved == true && widget.contract.author == "Zafarbek Karimov") {
                   saved = false;
+                  debugPrint("Un Save UI");
                   context.read<SavedBloc>().add(UnSave(contract: widget.contract));
                 } else if (saved == false && widget.contract.author == "Zafarbek Karimov") {
+                  debugPrint("Save in UI");
                   saved = true;
                   context.read<SavedBloc>().add(Save(contract: widget.contract));
                 } else {
@@ -132,7 +134,7 @@ class _SaveDetailState extends State<Single> {
                       if (widget.contract.author == "Zafarbek Karimov") {
                         context.read<SavedBloc>().add(Delete(contract: widget.contract, context: context));
                         if (state.status == SavedStateStatus.loaded) {
-                          context.read<ContractBloc>().add(const ContractEvent());
+                          context.read<ContractBloc>().add(ReloadEvent());
                           Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
                         }
                       } else {

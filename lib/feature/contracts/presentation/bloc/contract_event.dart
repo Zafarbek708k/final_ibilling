@@ -1,8 +1,10 @@
 part of 'contract_bloc.dart';
 
-class ContractEvent extends Equatable {
+sealed class ContractEvent extends Equatable {
   const ContractEvent();
+}
 
+class ReloadEvent extends ContractEvent {
   @override
   List<Object?> get props => [];
 }

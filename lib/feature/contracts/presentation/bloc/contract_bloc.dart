@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/domain/usecases/contract_usecase.dart';
-import 'package:final_ibilling/feature/contracts/domain/usecases/delete_contract_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/singletons/di/service_locator.dart';
@@ -17,16 +16,15 @@ part 'contract_state.dart';
 
 class ContractBloc extends Bloc<ContractEvent, ContractState> {
   final ContractUseCase _homeUseCase = ContractUseCase(repo: sl.call());
-  final DeleteContractUseCase _deleteContractUseCase = DeleteContractUseCase(repository: sl.call());
 
   ContractBloc() : super(ContractState()) {
-    on<ContractEvent>((event, emit) => init());
+    on<ContractEvent>((event, emit) {});
+    on<ReloadEvent>((event, emit) => init());
     on<GetALlContractEvent>((event, emit) => _getAllContractEvent(event, emit));
     on<ContractFilterEvent>((event, emit) => _contractFilterEvent(event, emit));
     on<BeginDateSelectEvent>((event, emit) => beginDateSelect(event, emit));
     on<EndDateSelectEvent>((event, emit) => endDateSelect(event, emit));
     on<SelectOneDayEvent>((event, emit) => _selectOneDayEvent(event, emit));
-    on<DeleteContractEvent>((event, emit) => _deleteContract(event, emit));
     on<SearchEvent>((event, emit) => _searchEvent(event, emit));
     init();
   }
@@ -46,13 +44,14 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       log("one day users = ${filteredList.length}");
 
       emit(state.copyWith(status: ContractStateStatus.loaded, filteredList: filteredList));
-      log("select func emit status loaded");
+      log("select func emit status loaded\n\n\n");
     } catch (e) {
       emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "Ushbu kunga oid contract mavjud emas"));
     }
   }
 
   Future<void> _searchEvent(SearchEvent event, Emitter<ContractState> emit) async {
+    log("\n search \n\n");
     emit(state.copyWith(status: ContractStateStatus.loading));
 
     final fullList = state.fullContract;
@@ -68,24 +67,26 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
     emit(state.copyWith(status: ContractStateStatus.loaded, searchList: searchList));
   }
 
-  Future<void> _deleteContract(DeleteContractEvent event, Emitter<ContractState> emit) async {
-    emit(state.copyWith(status: ContractStateStatus.loading));
-    final user = state.user;
-    user.contracts.removeWhere((contracts) {
-      return contracts.contractId == event.contract.contractId;
-    });
-    final result = await _deleteContractUseCase.call(UserModel(contracts: user.contracts, fullName: user.fullName, id: user.id));
-    result.fold(
-      (failure) {
-        emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "Something went wrong"));
-      },
-      (nothing) {
-        init();
-      },
-    );
-  }
+  // Future<void> _deleteContract(DeleteContractEvent event, Emitter<ContractState> emit) async {
+  //   log("\n delete \n\n");
+  //   emit(state.copyWith(status: ContractStateStatus.loading));
+  //   final user = state.user;
+  //   user.contracts.removeWhere((contracts) {
+  //     return contracts.contractId == event.contract.contractId;
+  //   });
+  //   final result = await _deleteContractUseCase.call(UserModel(contracts: user.contracts, fullName: user.fullName, id: user.id));
+  //   result.fold(
+  //     (failure) {
+  //       emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "Something went wrong"));
+  //     },
+  //     (nothing) {
+  //       init();
+  //     },
+  //   );
+  // }
 
   Future<void> _getAllContractEvent(GetALlContractEvent event, Emitter<ContractState> emit) async {
+    log("\n _getAllContractEvent \n\n");
     emit(state.copyWith(status: ContractStateStatus.loading));
     final result = await _homeUseCase.repo.getAllContractRepo();
 
@@ -101,6 +102,7 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   void _contractFilterEvent(ContractFilterEvent event, Emitter<ContractState> emit) {
+    log("\n _getAllContractEvent \n\n");
     final DateFormat inputFormat = DateFormat("HH:mm, d MMMM, yyyy");
     final List<ContractEntity> originalList = state.fullContract;
     emit(state.copyWith(status: ContractStateStatus.loading));
@@ -150,6 +152,7 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   void init() async {
+    log("\n init \n\n");
     emit(state.copyWith(status: ContractStateStatus.loading));
 
     final result = await _homeUseCase.repo.getAllContractRepo();

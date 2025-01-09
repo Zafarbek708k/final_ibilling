@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_loaded.dart';
@@ -55,22 +57,17 @@ class ContractPage extends StatelessWidget {
           BlocBuilder<ContractBloc, ContractState>(
             builder: (context, state) {
               if (state.status == ContractStateStatus.loading) {
-                debugPrint("Ui status loading");
                 return const LoadingStateWidget();
               }
               if (state.status == ContractStateStatus.error) {
-                debugPrint("Ui status error");
                 return ErrorStateWidget(errorMsg: state.errorMsg);
               }
               if (state.status == ContractStateStatus.initial) {
-                debugPrint("Ui status initial");
                 return const Center(child: Text("load more item"));
               }
               if (state.status == ContractStateStatus.loaded) {
-                debugPrint("status loaded => list length => ${state.filteredList.length}");
                 return Expanded(child: ContractLoadedWidget(contracts: state.filteredList, key: UniqueKey(),));
               }
-              debugPrint("Ui status default ");
               return const SizedBox.shrink();
             },
           ),
