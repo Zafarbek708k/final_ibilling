@@ -1,6 +1,6 @@
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
-import 'package:final_ibilling/feature/contracts/presentation/pages/single.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_widget.dart';
+import 'package:final_ibilling/feature/saved/presentation/pages/single.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,13 +28,8 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-
-    // Pagination faqat contractlar soni 12 tadan ko'p bo'lsa yoqiladi
     isPaginationEnabled = widget.contracts.length >= 12;
-
-    // Agar pagination kerak bo'lsa, faqat birinchi sahifadagi elementlarni olamiz
-    displayedList =
-        isPaginationEnabled ? widget.contracts.take(itemsPerPage).toList() : widget.contracts; // Aks holda barcha contractlarni ko'rsatamiz
+    displayedList = isPaginationEnabled ? widget.contracts.take(itemsPerPage).toList() : widget.contracts;
   }
 
   @override
@@ -60,12 +55,7 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
 
     if (startIndex < widget.contracts.length) {
       setState(() {
-        displayedList.addAll(
-          widget.contracts.sublist(
-            startIndex,
-            endIndex > widget.contracts.length ? widget.contracts.length : endIndex,
-          ),
-        );
+        displayedList.addAll(widget.contracts.sublist(startIndex, endIndex > widget.contracts.length ? widget.contracts.length : endIndex));
         currentPage++;
       });
     }
@@ -74,12 +64,10 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
   }
 
   Future<void> _onRefresh() async {
-    setState(
-      () {
-        currentPage = 1;
-        displayedList = isPaginationEnabled ? widget.contracts.take(itemsPerPage).toList() : widget.contracts;
-      },
-    );
+    setState(() {
+      currentPage = 1;
+      displayedList = isPaginationEnabled ? widget.contracts.take(itemsPerPage).toList() : widget.contracts;
+    });
   }
 
   @override
@@ -100,9 +88,11 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
             if (index < displayedList.length) {
               final contract = displayedList[index];
               return ContractWidget(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Single(entity: contract, fullContracts: displayedList)));
-                },
+                key: UniqueKey(),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Single(contract: contract, contracts: widget.contracts)),
+                ),
                 model: contract,
               );
             } else {

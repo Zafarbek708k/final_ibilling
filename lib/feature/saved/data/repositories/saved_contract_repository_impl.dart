@@ -14,9 +14,23 @@ class SavedContractRepositoryImpl extends SavedContractRepository {
   SavedContractRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, List<ContractModel>>> getSavedContract() async {
+  Future<Either<Failure, List<UserEntity>>> getAllData() async{
     try {
-      final value = await dataSource.getSavedContracts(api: Consts.apiSavedContracts);
+      final value = await dataSource.getAllData(api: Consts.apiContracts);
+      return Right(value);
+    } on ServerException {
+      return const Left(DioFailure("Server Error"));
+    } on DioException {
+      return const Left(DioFailure("Dio Error"));
+    }
+  }
+
+
+
+  @override
+  Future<Either<Failure, void>> save({required UserModel user})async {
+    try {
+      final value = await dataSource.save(api: Consts.apiContracts, data:user.toJson());
       return Right(value);
     } on ServerException {
       return const Left(DioFailure("Server Error"));
@@ -26,9 +40,21 @@ class SavedContractRepositoryImpl extends SavedContractRepository {
   }
 
   @override
-  Future<Either<Failure, List<UserEntity>>> getAllSavedContract() async{
+  Future<Either<Failure, void>> unSave({required UserModel user})async{
     try {
-      final value = await dataSource.getAllSavedContract(api: Consts.apiContracts);
+      final value = await dataSource.unSave(api: Consts.apiContracts, data: user.toJson());
+      return Right(value);
+    } on ServerException {
+      return const Left(DioFailure("Server Error"));
+    } on DioException {
+      return const Left(DioFailure("Dio Error"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> delete({required UserModel user})async{
+    try {
+      final value = await dataSource.delete(api: Consts.apiContracts, data: user.toJson());
       return Right(value);
     } on ServerException {
       return const Left(DioFailure("Server Error"));

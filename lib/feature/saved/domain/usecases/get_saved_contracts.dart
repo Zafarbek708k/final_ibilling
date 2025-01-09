@@ -12,5 +12,5 @@ class GetSavedContractsUseCase extends UseCase<List<UserEntity>, NoParams>{
   GetSavedContractsUseCase({required this.repository});
 
   @override
-  Future<Either<Failure, List<UserEntity>>> call(NoParams params)async=> repository.getAllSavedContract();
+  Future<Either<Failure, List<UserEntity>>> call(NoParams params)async=> repository.getAllData();
 }

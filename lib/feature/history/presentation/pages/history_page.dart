@@ -9,14 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../assets/colors/app_colors.dart';
 
-class HistoryPage extends StatefulWidget {
+class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
 
-  @override
-  State<HistoryPage> createState() => _HistoryPageState();
-}
-
-class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +90,7 @@ class HistorySuccessWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: ()async{
+      onRefresh: () async {
         context.read<HistoryBloc>().init();
       },
       child: ListView(

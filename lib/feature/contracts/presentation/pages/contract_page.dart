@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_loaded.dart';
@@ -10,16 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../saved/presentation/bloc/saved_bloc.dart';
 import '../bloc/contract_bloc.dart';
 
-class ContractPage extends StatefulWidget {
+class ContractPage extends StatelessWidget {
   const ContractPage({super.key});
 
-  @override
-  State<ContractPage> createState() => _ContractPageState();
-}
-
-class _ContractPageState extends State<ContractPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -5,23 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../assets/colors/app_colors.dart';
 import '../../../contracts/presentation/widgets/loading_state_widget.dart';
-import 'aved_success_ui.dart';
+import 'saved_success_ui.dart';
 
-class SavedPage extends StatefulWidget {
+class SavedPage extends StatelessWidget {
   const SavedPage({super.key});
 
-  @override
-  State<SavedPage> createState() => _SavedPageState();
-}
-
-class _SavedPageState extends State<SavedPage> {
-
-  @override
-  void didChangeDependencies() {
-    debugPrint("did change dependency");
-    context.read<SavedBloc>().loadData();
-    super.didChangeDependencies();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,21 +23,18 @@ class _SavedPageState extends State<SavedPage> {
       ),
       body: BlocBuilder<SavedBloc, SavedState>(
         builder: (context, state) {
-          debugPrint("Saved State status=> ${state.status}");
           if (state.status == SavedStateStatus.loading) {
             return const LoadingStateWidget();
           } else if (state.status == SavedStateStatus.error) {
             return ErrorStateWidget(errorMsg: state.errorMsg);
           } else if (state.status == SavedStateStatus.loaded) {
-            return SavedSuccessStateWidget(contracts: state.contractEntity);
-          } else {
-            return const SizedBox.shrink();
+            return SavedSuccessStateWidget(savedContracts: state.savedContracts, fullContractList: state.contracts);
+          } else if (state.status == SavedStateStatus.init) {
+            return const LoadingStateWidget();
           }
+          return const SizedBox.shrink();
         },
       ),
     );
   }
 }
-
-
-

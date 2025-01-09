@@ -47,8 +47,9 @@ class EndDateSelectEvent extends ContractEvent {
 
 class SaveContractEvent extends ContractEvent {
   final ContractEntity contract;
+  final BuildContext context;
 
-  const SaveContractEvent({required this.contract});
+  const SaveContractEvent({required this.contract, required this.context});
 
   @override
   List<Object?> get props => [];
@@ -56,8 +57,9 @@ class SaveContractEvent extends ContractEvent {
 
 class UnSaveContractEvent extends ContractEvent {
   final ContractEntity contract;
+  final BuildContext context;
 
-  const UnSaveContractEvent({required this.contract});
+  const UnSaveContractEvent({required this.contract, required this.context});
 
   @override
   List<Object?> get props => [];

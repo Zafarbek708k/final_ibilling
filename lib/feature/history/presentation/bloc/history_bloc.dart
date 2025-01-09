@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
@@ -14,7 +13,7 @@ part 'history_state.dart';
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   final HistoryUseCase _historyUseCase = HistoryUseCase(repository: sl.call());
 
-  HistoryBloc() : super(const HistoryState()) {
+  HistoryBloc() : super(HistoryState()) {
     on<HistoryEvent>((event, emit) {});
     on<StartTimeEvent>((event, emit) => _startTimeEvent(event, emit));
     on<EndTimeEvent>((event, emit) => _endTimeEvent(event, emit));
@@ -29,56 +28,25 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     final endTime = state.endTime;
     final dateFormat = DateFormat("HH:mm, d MMMM, yyyy");
 
-    log("start time = $startTime  \n endTime = $endTime \n list count = ${list.length} state list count => ${state.contracts.length}");
-
-    // Filter the contracts based on the provided logic
     final filteredList = list.where((contract) {
       final contractDateTime = dateFormat.parse(contract.dateTime);
-
-      log("parse Date Time => $contractDateTime");
-
-      // Skip if contractDateTime is null
-      if (contractDateTime == null) return false;
-
-      // Case 1: Both startTime and endTime are not null
-      if (startTime != null && endTime != null) {
-        log("message");
-        return contractDateTime.isAfter(endTime) && contractDateTime.isBefore(startTime);
-      }
-
-      // Case 2: Only startTime is not null
-      if (startTime != null && endTime == null) {
-        return contractDateTime.isAfter(startTime);
-      }
-
-      // Case 3: Only endTime is not null
-      if (startTime == null && endTime != null) {
-        return contractDateTime.isBefore(endTime);
-      }
-
-      // Case 4: Both startTime and endTime are null
-      return true; // Include all contracts
+      return contractDateTime.isAfter(startTime) && contractDateTime.isBefore(endTime); // Include all contracts
     }).toList();
-
-    log("Filtered list count = ${filteredList.length}");
     emit(state.copyWith(filteredList: filteredList, status: HistoryStateStatus.loaded));
   }
 
-
-  Future<void> _startTimeEvent (StartTimeEvent event, Emitter<HistoryState>emit)async{
+  Future<void> _startTimeEvent(StartTimeEvent event, Emitter<HistoryState> emit) async {
     emit(state.copyWith(startTime: event.startTime));
     _filterEvent();
   }
-  Future<void> _endTimeEvent (EndTimeEvent event, Emitter<HistoryState>emit)async{
+
+  Future<void> _endTimeEvent(EndTimeEvent event, Emitter<HistoryState> emit) async {
     emit(state.copyWith(endTime: event.endTime));
     _filterEvent();
   }
 
-
-
   Future<void> init() async {
     emit(state.copyWith(status: HistoryStateStatus.loading, endTime: null, startTime: null));
-    // NoParams params = NoParams();
     final resul = await _historyUseCase.call(NoParams());
     resul.fold(
       (failure) {

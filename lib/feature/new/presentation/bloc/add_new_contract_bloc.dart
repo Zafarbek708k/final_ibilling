@@ -23,44 +23,23 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
     _getUsersData();
   }
 
-  String monthChecker(int day) {
-    switch (day) {
-      case 1:
-        return "January";
-      case 2:
-        return "February";
-      case 3:
-        return "March";
-      case 4:
-        return "April";
-      case 5:
-        return "May";
-      case 6:
-        return "June";
-      case 7:
-        return "July";
-      case 8:
-        return "August";
-      case 9:
-        return "September";
-      case 10:
-        return "October";
-      case 11:
-        return "November";
-      case 12:
-        return "December";
-      default:
-        return "January";
-    }
-  }
+  String monthChecker(int day) => day == 1 ? "January"
+      : day == 2       ? "February"
+          : day == 3       ? "March"
+              : day == 4       ? "April"
+                  : day == 5       ? "May"
+                      : day == 6       ? "June"
+                          : day == 7       ? "July"
+                              : day == 8       ? "August"
+                                  : day == 9       ? "September"
+                                      : day == 10       ? "October"
+                                          : day == 11       ? "November"
+                                              : day == 12       ? "December" : "January";
 
   Future<void> _createNewContract(AddNewContractEvent event, Emitter<AddNewContractState> emit) async {
-    debugPrint("loading _createNewContract");
-    debugPrint("state user contracts length 1 chi => ${state.user.contracts.length}");
     emit(state.copyWith(status: AddNewContractStateStatus.loading));
     String month = monthChecker(DateTime.now().month);
     final userContracts = [...state.user.contracts];
-    debugPrint("state user contracts length 2 chi => ${state.user.contracts.length}");
 
     final oneContract = ContractEntity(
       contractId: "${5 + Random().nextInt(96)}",
@@ -75,7 +54,6 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
       dateTime: "12:30, ${DateTime.now().day} $month, ${DateTime.now().year}",
     );
     userContracts.add(oneContract);
-    debugPrint("all contracts updated ${userContracts.length}   username ${state.user.fullName}");
     final user = UserModel(contracts: userContracts, fullName: state.user.fullName, id: state.user.id);
 
     final result = await _updateUser.call(user);
@@ -99,8 +77,6 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
         state.copyWith(status: AddNewContractStateStatus.error, errorMsg: "Something went wrong");
       },
       (user) {
-        debugPrint("user name = ${user.fullName}");
-        debugPrint("user contracts length = ${user.contracts.length}");
         emit(state.copyWith(status: AddNewContractStateStatus.loaded, user: user));
       },
     );

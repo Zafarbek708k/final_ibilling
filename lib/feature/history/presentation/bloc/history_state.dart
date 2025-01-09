@@ -5,19 +5,20 @@ enum HistoryStateStatus { init, loading, loaded, error }
 class HistoryState extends Equatable {
   final HistoryStateStatus status;
   final String errorMsg;
-  final DateTime? startTime;
-  final DateTime? endTime;
+  final DateTime startTime;
+  final DateTime endTime;
   final List<ContractEntity> contracts;
   final List<ContractEntity> filteredList;
 
-  const HistoryState({
+  HistoryState({
     this.status = HistoryStateStatus.init,
     this.errorMsg = "",
-    this.startTime,
-    this.endTime,
+    DateTime? startTime,
+    DateTime? endTime,
     this.contracts = const [],
     this.filteredList = const [],
-  });
+  })  : startTime = startTime ?? DateTime(2024, 1, 1),
+        endTime = endTime ?? DateTime(2025, 1, 1);
 
   HistoryState copyWith({
     HistoryStateStatus? status,

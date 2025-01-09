@@ -1,6 +1,6 @@
 part of 'add_new_contract_bloc.dart';
 
-enum AddNewContractStateStatus { init, loading, loaded, error }
+enum AddNewContractStateStatus { init, loading, loaded, error, save}
 
 class AddNewContractState extends Equatable {
   final AddNewContractStateStatus status;

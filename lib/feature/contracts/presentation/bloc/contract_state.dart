@@ -1,6 +1,7 @@
 part of 'contract_bloc.dart';
 
-enum ContractStateStatus { initial, loading, loaded, error }
+enum ContractStateStatus { initial, loading, loaded, error}
+
 
 class ContractState extends Equatable {
   final ContractStateStatus status;
