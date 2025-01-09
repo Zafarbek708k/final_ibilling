@@ -24,8 +24,9 @@ class UnSave extends SavedEvent {
 
 class Delete extends SavedEvent {
   final ContractEntity contract;
+  final BuildContext context;
 
-  const Delete({required this.contract});
+  const Delete({required this.contract, required this.context});
 
   @override
   List<Object?> get props => [];

@@ -1,12 +1,26 @@
 part of 'contract_bloc.dart';
 
-sealed class ContractEvent extends Equatable {
+class ContractEvent extends Equatable {
   const ContractEvent();
+
+  @override
+  List<Object?> get props => [];
 }
 
-class SearchEvent extends ContractEvent{
+class SelectOneDayEvent extends ContractEvent {
+  final DateTime date;
+
+  const SelectOneDayEvent({required this.date});
+
+  @override
+  List<Object?> get props => [date];
+}
+
+class SearchEvent extends ContractEvent {
   final String text;
+
   const SearchEvent({required this.text});
+
   @override
   List<Object?> get props => [];
 }
@@ -43,26 +57,6 @@ class EndDateSelectEvent extends ContractEvent {
 
   @override
   List<Object?> get props => [endTime];
-}
-
-class SaveContractEvent extends ContractEvent {
-  final ContractEntity contract;
-  final BuildContext context;
-
-  const SaveContractEvent({required this.contract, required this.context});
-
-  @override
-  List<Object?> get props => [];
-}
-
-class UnSaveContractEvent extends ContractEvent {
-  final ContractEntity contract;
-  final BuildContext context;
-
-  const UnSaveContractEvent({required this.contract, required this.context});
-
-  @override
-  List<Object?> get props => [];
 }
 
 class DeleteContractEvent extends ContractEvent {

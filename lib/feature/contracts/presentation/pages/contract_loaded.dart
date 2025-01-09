@@ -3,6 +3,8 @@ import 'package:final_ibilling/feature/contracts/presentation/widgets/contract_w
 import 'package:final_ibilling/feature/saved/presentation/pages/single.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../bloc/contract_bloc.dart';
 
@@ -81,29 +83,44 @@ class _ContractLoadedWidgetState extends State<ContractLoadedWidget> {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: displayedList.length + _loadingIndicatorCount(),
-          itemBuilder: (context, index) {
-            if (index < displayedList.length) {
-              final contract = displayedList[index];
-              return ContractWidget(
-                key: UniqueKey(),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Single(contract: contract, contracts: widget.contracts)),
-                ),
-                model: contract,
-              );
-            } else {
-              return const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+        child: Column(
+          children: [
+            widget.contracts.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 150),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [SvgPicture.asset("assets/icons/empty_saved.svg"), 10.verticalSpace, const Text("No more item")],
+                    ),
+                  )
+                : const SizedBox.shrink(),
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: displayedList.length + _loadingIndicatorCount(),
+                itemBuilder: (context, index) {
+                  if (index < displayedList.length) {
+                    final contract = displayedList[index];
+                    return ContractWidget(
+                      key: UniqueKey(),
+                      onTap: () =>
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Single(contract: contract, contracts: widget.contracts))),
+                      model: contract,
+                    );
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

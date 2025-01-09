@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
+import 'package:final_ibilling/feature/contracts/presentation/bloc/contract_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -127,7 +130,11 @@ class _SaveDetailState extends State<Single> {
                     },
                     delete: () {
                       if (widget.contract.author == "Zafarbek Karimov") {
-                        context.read<SavedBloc>().add(Delete(contract: widget.contract));
+                        context.read<SavedBloc>().add(Delete(contract: widget.contract, context: context));
+                        if (state.status == SavedStateStatus.loaded) {
+                          context.read<ContractBloc>().add(const ContractEvent());
+                          Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
+                        }
                       } else {
                         Utils.fireSnackBar("You can not delete others contracts", context);
                       }
@@ -141,17 +148,18 @@ class _SaveDetailState extends State<Single> {
             10.verticalSpace,
             Align(
               alignment: Alignment.topLeft,
-              child: Text("Other contracts with \n ${"${widget.contract.author}"}"),
+              child: Text("Other contracts with \n \t \t \t ${widget.contract.author}", key: UniqueKey()),
             ),
             10.verticalSpace,
             Expanded(
               child: ListView(
+                key: UniqueKey(),
                 children: [
                   ...List.generate(
                     authorList.length,
                     (index) {
                       final model = authorList[index];
-                      return ContractWidget(onTap: () {}, model: model);
+                      return ContractWidget(key: ValueKey(authorList[index]), onTap: () {}, model: model);
                     },
                   )
                 ],

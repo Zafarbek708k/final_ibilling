@@ -1,19 +1,21 @@
 import 'dart:async';
-import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_ibilling/core/usecases/usecase.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
+import 'package:final_ibilling/feature/contracts/presentation/bloc/contract_bloc.dart';
 import 'package:final_ibilling/feature/saved/domain/usecases/delete_usecase.dart';
 import 'package:final_ibilling/feature/saved/domain/usecases/save_usecase.dart';
 import 'package:final_ibilling/feature/saved/domain/usecases/unsave_usecase.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/singletons/di/service_locator.dart';
 import '../../domain/usecases/get_saved_contracts.dart';
 
 part 'saved_event.dart';
+
 part 'saved_state.dart';
 
 class SavedBloc extends Bloc<SavedEvent, SavedState> {
@@ -32,19 +34,14 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
 
   Future<void> _delete(Delete event, Emitter<SavedState> emit) async {
     emit(state.copyWith(status: SavedStateStatus.loading));
-    final contracts = state.user.contracts;
-    final index = contracts.indexWhere((contract) => contract.contractId == event.contract.contractId);
-    contracts.removeWhere((contract){
-      log("bool delete func => ${contract.contractId == event.contract.contractId}");
-     return contract.contractId == event.contract.contractId;
-    });
-
-    final user = UserModel(contracts: contracts, fullName: state.user.fullName, id: state.user.id);
-    final result = await _savedUseCase.call(user);
+    final updatedContracts = List.of(state.user.contracts)..removeWhere((contract) => contract.contractId == event.contract.contractId);
+    final updatedUser = UserModel(contracts: updatedContracts, fullName: state.user.fullName, id: state.user.id);
+    final result = await _deleteUseCase.call(updatedUser);
+    emit(state.copyWith(status: SavedStateStatus.loading));
     result.fold(
       (failure) => emit(state.copyWith(status: SavedStateStatus.error, errorMsg: failure.message)),
-      (nothing) {
-        emit(state.copyWith(status: SavedStateStatus.loaded));
+      (success) {
+        emit(state.copyWith(status: SavedStateStatus.loaded, user: updatedUser));
         loadData();
       },
     );

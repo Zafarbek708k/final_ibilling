@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_loaded.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../saved/presentation/bloc/saved_bloc.dart';
 import '../bloc/contract_bloc.dart';
 
 class ContractPage extends StatelessWidget {
@@ -40,29 +37,44 @@ class ContractPage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<ContractBloc, ContractState>(
-        builder: (context, state) {
-          if (state.status == ContractStateStatus.loading) {
-            return const LoadingStateWidget();
-          }
-          if (state.status == ContractStateStatus.error) {
-            return ErrorStateWidget(errorMsg: state.errorMsg);
-          }
-          if (state.status == ContractStateStatus.initial) {
-            return const Center(child: Text("load more item"));
-          }
-          if (state.status == ContractStateStatus.loaded) {
-            return Column(
-              children: [
-                16.verticalSpace,
-                CustomCalendarWidget(pressData: () {}),
-                10.verticalSpace,
-                Expanded(child: ContractLoadedWidget(contracts: state.filteredList)),
-              ],
-            );
-          }
-          return const SizedBox.shrink();
-        },
+      body: Column(
+        children: [
+          16.verticalSpace,
+          BlocBuilder<ContractBloc, ContractState>(
+            builder: (context, state) {
+              return CustomCalendarWidget(
+                onDateSelected: ({required DateTime date}) {
+                  if (state.status == ContractStateStatus.loaded) {
+                    context.read<ContractBloc>().add(SelectOneDayEvent(date: date));
+                  }
+                },
+              );
+            },
+          ),
+          10.verticalSpace,
+          BlocBuilder<ContractBloc, ContractState>(
+            builder: (context, state) {
+              if (state.status == ContractStateStatus.loading) {
+                debugPrint("Ui status loading");
+                return const LoadingStateWidget();
+              }
+              if (state.status == ContractStateStatus.error) {
+                debugPrint("Ui status error");
+                return ErrorStateWidget(errorMsg: state.errorMsg);
+              }
+              if (state.status == ContractStateStatus.initial) {
+                debugPrint("Ui status initial");
+                return const Center(child: Text("load more item"));
+              }
+              if (state.status == ContractStateStatus.loaded) {
+                debugPrint("status loaded => list length => ${state.filteredList.length}");
+                return Expanded(child: ContractLoadedWidget(contracts: state.filteredList, key: UniqueKey(),));
+              }
+              debugPrint("Ui status default ");
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
     );
   }

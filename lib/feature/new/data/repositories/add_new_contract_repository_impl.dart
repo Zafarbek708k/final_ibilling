@@ -19,7 +19,6 @@ class AddNewContractRepositoryImpl extends AddNewContractRepository {
   Future<Either<Failure, UserEntity>> getUserData() async {
     try {
       final value = await dataSource.getOneUserData(api: Consts.apiContracts);
-      log("Success add new contract repo impl");
       return Right(value);
     } on ServerException {
       log("error getAllContractRepo func server exception");
@@ -34,7 +33,6 @@ class AddNewContractRepositoryImpl extends AddNewContractRepository {
   Future<Either<Failure, void>> updateUserData({required UserModel user}) async {
    try{
      final result = await dataSource.updateUserData(api: Consts.apiContracts, user: user);
-     log("success update data in add new repo impl");
      return Right(result);
    }on ServerException{
      log("error getAllContractRepo func server exception");

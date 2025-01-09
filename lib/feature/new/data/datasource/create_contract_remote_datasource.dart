@@ -22,7 +22,7 @@ class CreateContractRemoteDataSourceImpl extends CreateContractRemoteDataSource{
     final response = await dio.get("$api/1", queryParameters: query);
     if(response.statusCode == 200 || response.statusCode == 201){
       final  model = oneUserModelFromJson(jsonEncode(response.data));
-      log("Success load data");
+      log("Success get User data status code ${response.statusCode}");
       return model;
     }else{
       log("Error load data");
@@ -34,7 +34,7 @@ class CreateContractRemoteDataSourceImpl extends CreateContractRemoteDataSource{
   Future<void> updateUserData({required String api, required UserModel user})async{
     final response = await dio.put("$api/1", data: user.toJson());
     if(response.statusCode == 200 || response.statusCode == 201){
-      log("success to update data");
+      log("success to update data response status code ${response.statusCode}");
     }else{
       throw ServerException(statusCode: response.statusCode ?? 500, errorKey: "errorKey", errorMessage: "errorMessage");
     }

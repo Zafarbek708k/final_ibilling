@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomCalendarWidget extends StatefulWidget {
-  const CustomCalendarWidget({super.key, required this.pressData});
-
-  final VoidCallback pressData;
+  const CustomCalendarWidget({super.key, required this.onDateSelected});
+  final Function({required DateTime date}) onDateSelected;
 
   @override
   CustomCalendarWidgetState createState() => CustomCalendarWidgetState();
@@ -14,6 +12,7 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
   int currentYear = DateTime.now().year;
   int currentMonth = DateTime.now().month;
   int today = DateTime.now().day;
+  int? selectedDay;
 
   void _goToPreviousMonth() {
     setState(() {
@@ -23,6 +22,7 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
       } else {
         currentMonth--;
       }
+      selectedDay = null; // Reset selected day when month changes
     });
   }
 
@@ -34,6 +34,7 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
       } else {
         currentMonth++;
       }
+      selectedDay = null; // Reset selected day when month changes
     });
   }
 
@@ -51,10 +52,19 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${CalendarUtils.monthNames[currentMonth - 1]}, $currentYear'),
+                Text(
+                  '${CalendarUtils.monthNames[currentMonth - 1]}, $currentYear',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
                 const Spacer(),
-                IconButton(icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35), onPressed: _goToPreviousMonth),
-                IconButton(icon: const Icon(Icons.chevron_right, color: Colors.white, size: 35), onPressed: _goToNextMonth),
+                IconButton(
+                  icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
+                  onPressed: _goToPreviousMonth,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right, color: Colors.white, size: 35),
+                  onPressed: _goToNextMonth,
+                ),
               ],
             ),
           ),
@@ -66,26 +76,48 @@ class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
               itemCount: monthDays.length,
               itemBuilder: (context, index) {
                 final day = monthDays[index];
+                final isSelected = selectedDay == day['day'];
+
                 return GestureDetector(
-                  onTap: widget.pressData,
+                  onTap: () {
+                    setState(() {
+                      selectedDay = day['day'];
+                    });
+                    // Pass the selected date to the callback
+                    widget.onDateSelected(date: day['date']);
+                  },
                   child: Container(
                     width: 60,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
-                      color: day['day'] == today  && currentMonth == 1 ? Colors.teal : Colors.transparent,
+                      color: isSelected ? Colors.teal : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
+                      border: isSelected
+                          ? Border.all(color: Colors.tealAccent, width: 2)
+                          : null,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(day['dayName'], style: const TextStyle(color: Colors.white)),
-                        5.verticalSpace,
-                        Text(day['day'].toString(), style: const TextStyle(color: Colors.white, fontSize: 16)),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 18.0, right: 18, top: 5),
-                          child: Divider(color: Colors.white, height: 2, thickness: 4),
-                        )
+                        Text(
+                          day['dayName'],
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          day['day'].toString(),
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        if (isSelected)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 18.0, right: 18, top: 5),
+                            child: Divider(
+                              color: Colors.white,
+                              height: 2,
+                              thickness: 4,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -131,3 +163,4 @@ class CalendarUtils {
     });
   }
 }
+
