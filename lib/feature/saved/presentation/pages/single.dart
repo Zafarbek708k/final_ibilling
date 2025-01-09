@@ -93,6 +93,7 @@ class _SaveDetailState extends State<Single> {
                 } else {
                   Utils.fireSnackBar("This Data does not belong to you", context);
                 }
+                context.read<ContractBloc>().add(ReloadEvent());
                 setState(() {});
               },
               icon: SvgPicture.asset("assets/icons/outline_save.svg", color: saved ? Colors.white : Colors.grey)),
@@ -126,6 +127,7 @@ class _SaveDetailState extends State<Single> {
                     save: () {
                       if (saved == false && widget.contract.author == "Zafarbek Karimov") {
                         context.read<SavedBloc>().add(Save(contract: widget.contract));
+                        context.read<ContractBloc>().add(ReloadEvent());
                       } else {
                         Utils.fireSnackBar("Already saved this data or This Data does not belong to you", context);
                       }

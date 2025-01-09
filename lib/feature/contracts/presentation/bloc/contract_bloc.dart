@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
+import 'package:final_ibilling/core/usecases/usecase.dart';
 import 'package:final_ibilling/feature/contracts/data/models/contract_model.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
 import 'package:final_ibilling/feature/contracts/domain/usecases/contract_usecase.dart';
@@ -51,49 +52,23 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   Future<void> _searchEvent(SearchEvent event, Emitter<ContractState> emit) async {
-    log("\n search \n\n");
     emit(state.copyWith(status: ContractStateStatus.loading));
-
     final fullList = state.fullContract;
-
-    if (event.text == null || event.text.trim().isEmpty) {
+    if (event.text.trim().isEmpty) {
       emit(state.copyWith(status: ContractStateStatus.loaded, searchList: fullList));
       return;
     }
     final searchText = event.text.trim().toLowerCase();
-    final searchList = fullList.where((contract) {
-      return contract.author.toLowerCase().contains(searchText);
-    }).toList();
+    final searchList = fullList.where((contract) => contract.author.toLowerCase().contains(searchText)).toList();
     emit(state.copyWith(status: ContractStateStatus.loaded, searchList: searchList));
   }
 
-  // Future<void> _deleteContract(DeleteContractEvent event, Emitter<ContractState> emit) async {
-  //   log("\n delete \n\n");
-  //   emit(state.copyWith(status: ContractStateStatus.loading));
-  //   final user = state.user;
-  //   user.contracts.removeWhere((contracts) {
-  //     return contracts.contractId == event.contract.contractId;
-  //   });
-  //   final result = await _deleteContractUseCase.call(UserModel(contracts: user.contracts, fullName: user.fullName, id: user.id));
-  //   result.fold(
-  //     (failure) {
-  //       emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "Something went wrong"));
-  //     },
-  //     (nothing) {
-  //       init();
-  //     },
-  //   );
-  // }
-
   Future<void> _getAllContractEvent(GetALlContractEvent event, Emitter<ContractState> emit) async {
-    log("\n _getAllContractEvent \n\n");
     emit(state.copyWith(status: ContractStateStatus.loading));
-    final result = await _homeUseCase.repo.getAllContractRepo();
+    final result = await _homeUseCase.call(NoParams());
 
     result.fold(
-      (failure) {
-        emit(state.copyWith(status: ContractStateStatus.error, errorMsg: failure.message));
-      },
+      (failure) => emit(state.copyWith(status: ContractStateStatus.error, errorMsg: failure.message)),
       (users) {
         final contracts = users.expand((user) => user.contracts).toList();
         emit(state.copyWith(status: ContractStateStatus.loaded, userList: users, filteredList: contracts, fullContract: contracts));
@@ -102,7 +77,6 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   void _contractFilterEvent(ContractFilterEvent event, Emitter<ContractState> emit) {
-    log("\n _getAllContractEvent \n\n");
     final DateFormat inputFormat = DateFormat("HH:mm, d MMMM, yyyy");
     final List<ContractEntity> originalList = state.fullContract;
     emit(state.copyWith(status: ContractStateStatus.loading));
@@ -116,7 +90,6 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       }).toList();
       List<ContractEntity> finalFilteredList = filteredByStatus.where((item) {
         try {
-          if (item.dateTime == null) return false;
           DateTime itemDateTime = inputFormat.parse(item.dateTime);
           return itemDateTime.isAfter(state.beginDate) && itemDateTime.isBefore(state.endDate);
         } catch (e) {
@@ -127,12 +100,13 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
       // Emit updated state
       emit(
         state.copyWith(
-            status: ContractStateStatus.loaded,
-            filteredList: finalFilteredList,
-            paid: event.paid,
-            inProcess: event.process,
-            rejectByIQ: event.rejectIq,
-            rejectByPayme: event.rejectPay),
+          status: ContractStateStatus.loaded,
+          filteredList: finalFilteredList,
+          paid: event.paid,
+          inProcess: event.process,
+          rejectByIQ: event.rejectIq,
+          rejectByPayme: event.rejectPay,
+        ),
       );
     } catch (e) {
       emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "Failed to filter contracts. Error: $e"));
@@ -152,15 +126,12 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
   }
 
   void init() async {
-    log("\n init \n\n");
     emit(state.copyWith(status: ContractStateStatus.loading));
 
-    final result = await _homeUseCase.repo.getAllContractRepo();
+    final result = await _homeUseCase.call(NoParams());
 
     result.fold(
-      (failure) {
-        emit(state.copyWith(status: ContractStateStatus.error, errorMsg: failure.message));
-      },
+      (failure) => emit(state.copyWith(status: ContractStateStatus.error, errorMsg: failure.message)),
       (users) {
         final contracts = users.expand((user) => user.contracts as List<ContractModel>).toList();
         final dateFormat = DateFormat('HH:mm, d MMMM, yyyy');
@@ -178,7 +149,5 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
     );
   }
 
-  void clear() {
-    emit(state.copyWith(searchList: []));
-  }
+  void clear() => emit(state.copyWith(searchList: []));
 }
