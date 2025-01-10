@@ -28,8 +28,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStateStatus.loaded, locale: event.locale));
       event.context.read<LocalizationCubit>().changeLocale(_getLocaleFromCode(event.locale), event.context);
       event.context.setLocale(_getLocaleFromCode(event.locale));
-    }catch(e){
-      emit(state.copyWith(status: ProfileStateStatus.error, errorMsg: "Something went wrong"));
+          }catch(e){
+      emit(state.copyWith(status: ProfileStateStatus.error, errorMsg: "Something went wrong", locale: "uz"));
     }
   }
 
@@ -40,7 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if(result != null){
       emit(state.copyWith(status: ProfileStateStatus.loaded, locale: result));
     }else{
-      emit(state.copyWith(status: ProfileStateStatus.error, errorMsg: "Locale is not find"));
+      emit(state.copyWith(status: ProfileStateStatus.loaded, locale: "uz"));
     }
   }
 

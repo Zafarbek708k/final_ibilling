@@ -32,11 +32,10 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
 
   Future<void> _delete(Delete event, Emitter<SavedState> emit) async {
     emit(state.copyWith(status: SavedStateStatus.loading));
-    Timer(const Duration(seconds: 4), () => debugPrint("wait 4 sec, state status => ${state.status}"));
+    Timer(const Duration(seconds: 1), () => debugPrint("wait 4 sec, state status => ${state.status}"));
     final updatedContracts = List.of(state.user.contracts)..removeWhere((contract) => contract.contractId == event.contract.contractId);
     final updatedUser = UserModel(contracts: updatedContracts, fullName: state.user.fullName, id: state.user.id);
     final result = await _deleteUseCase.call(updatedUser);
-    debugPrint("Stateeeee statusss => ${state.status}");
     result.fold(
       (failure) => emit(state.copyWith(status: SavedStateStatus.error, errorMsg: failure.message)),
       (success) {
@@ -52,7 +51,6 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
     final index = contracts.indexWhere((contract) => contract.contractId == event.contract.contractId);
 
     if (index != -1) {
-      debugPrint("save");
       contracts[index] = ContractModel(
         contractId: event.contract.contractId,
         saved: true,
@@ -83,7 +81,6 @@ class SavedBloc extends Bloc<SavedEvent, SavedState> {
     final index = contracts.indexWhere((contract) => contract.contractId == event.contract.contractId);
 
     if (index != -1) {
-      debugPrint("un save");
       contracts[index] = ContractModel(
         contractId: event.contract.contractId,
         saved: false,

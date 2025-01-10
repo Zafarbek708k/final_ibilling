@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/singletons/di/service_locator.dart';
+import 'core/singletons/storage/storage_keys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,10 @@ class MyApp extends StatelessWidget {
           splitScreenMode: true,
           child: BlocBuilder<LocalizationCubit, Locale>(
             builder: (context, locale) {
+              final String? result = StorageRepository.getString(StorageKeys.locale);
+              if(result == null){
+                context.read<LocalizationCubit>().changeLocale(const Locale("uz"), context);
+              }
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 localizationsDelegates: context.localizationDelegates,

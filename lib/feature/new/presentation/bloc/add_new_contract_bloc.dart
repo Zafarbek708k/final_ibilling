@@ -41,6 +41,8 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
     String month = monthChecker(DateTime.now().month);
     final userContracts = [...state.user.contracts];
     debugPrint("old contract list length list=> ${userContracts.length}");
+    final hour = DateTime.now().hour;
+    final minute = DateTime.now().minute;
 
     final oneContract = ContractEntity(
       contractId: "${5 + Random().nextInt(96)}",
@@ -52,9 +54,8 @@ class AddNewContractBloc extends Bloc<AddNewContractEvent, AddNewContractState> 
       numberOfInvoice: "16",
       addressOrganization: event.address,
       innOrganization: event.inn,
-      dateTime: "12:30, ${DateTime.now().day} $month, ${DateTime.now().year}",
+      dateTime: "$hour:$minute, ${DateTime.now().day} $month, ${DateTime.now().year}",
     );
-
     userContracts.add(oneContract);
 
     debugPrint("new contract list length list=> ${userContracts.length}");
