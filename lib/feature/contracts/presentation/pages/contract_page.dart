@@ -1,13 +1,11 @@
-import 'dart:developer';
-
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_loaded.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/filter_page.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/search_page.dart';
+import 'package:final_ibilling/feature/contracts/presentation/widgets/app_circle_avatar.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/calendar.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/loading_state_widget.dart';
-import 'package:final_ibilling/feature/main_wrapper/animated_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,10 +21,7 @@ class ContractPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10.0, bottom: 4),
-          child: CircleAvatar(backgroundColor: AppColors.darkGray, radius: 8),
-        ),
+        leading: const AppCircleAvatar(),
         title: Text("Contracts", style: context.titleLarge),
         actions: [
           IconButton(
@@ -42,9 +37,6 @@ class ContractPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          16.verticalSpace,
-          // AnimatedThemeToggle(isDarkMode: true, onThemeToggle: (value){}),
-          16.verticalSpace,
           BlocBuilder<ContractBloc, ContractState>(
             builder: (context, state) {
               return CustomCalendarWidget(
@@ -69,7 +61,11 @@ class ContractPage extends StatelessWidget {
                 return const Center(child: Text("load more item"));
               }
               if (state.status == ContractStateStatus.loaded) {
-                return Expanded(child: ContractLoadedWidget(contracts: state.filteredList, key: UniqueKey(),));
+                return Expanded(
+                    child: ContractLoadedWidget(
+                  contracts: state.filteredList,
+                  key: UniqueKey(),
+                ));
               }
               return const SizedBox.shrink();
             },

@@ -6,8 +6,7 @@ import 'package:final_ibilling/feature/history/presentation/bloc/history_bloc.da
 import 'package:final_ibilling/feature/history/presentation/widgets/data_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../assets/colors/app_colors.dart';
+import '../../../contracts/presentation/widgets/app_circle_avatar.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -17,10 +16,7 @@ class HistoryPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10.0, bottom: 4),
-          child: CircleAvatar(backgroundColor: AppColors.darkGray, radius: 8),
-        ),
+        leading: const AppCircleAvatar(),
         title: Text("History", style: context.titleLarge),
       ),
       body: Column(

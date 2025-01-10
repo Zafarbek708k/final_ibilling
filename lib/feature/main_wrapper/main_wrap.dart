@@ -48,15 +48,12 @@ class _MainWrapState extends State<MainWrap> {
       },
       child: Scaffold(
         backgroundColor: AppColors.darkest,
-        body: IgnorePointer(
-          ignoring: true,
-          child: Stack(
-            children: [
-              IgnorePointer(child: seasonalEffectWidget(Range(0.1, 7), context: context)),
-              _pages[_currentIndex],
-              IgnorePointer(child: seasonalEffectWidget(Range(2, 12), context: context)),
-            ],
-          ),
+        body: Stack(
+          children: [
+            IgnorePointer(child: seasonalEffectWidget(Range(0.1, 7), context: context)),
+            _pages[_currentIndex],
+            IgnorePointer(child: seasonalEffectWidget(Range(2, 12), context: context)),
+          ],
         ),
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(splashColor: Colors.transparent, highlightColor: Colors.transparent),

@@ -1,12 +1,12 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="50" height="50" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_d_153_297)">
 <mask id="mask0_153_297" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="18" y="16" width="24" height="24">
 <circle cx="30" cy="28" r="12" fill="#C4C4C4"/>
 </mask>
 <g mask="url(#mask0_153_297)">
 <rect x="18" y="16" width="24" height="8.22857" fill="white"/>
-<rect x="18" y="24.2285" width="24" height="7.54286" fill="#0C47B7"/>
-<rect x="18" y="31.7715" width="24" height="8.22857" fill="#E53B35"/>
+<rect x="18" y="24.2285" width="30" height="7.54286" fill="#0C47B7"/>
+<rect x="18" y="31.7715" width="30" height="8.22857" fill="#E53B35"/>
 </g>
 </g>
 <defs>

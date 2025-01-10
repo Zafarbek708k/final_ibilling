@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../assets/colors/app_colors.dart';
 import '../../../contracts/presentation/bloc/contract_bloc.dart';
+import '../../../contracts/presentation/widgets/app_circle_avatar.dart';
 import '../widgets/build_custom_dropdown.dart';
 
 class AddNewContractPage extends StatefulWidget {
@@ -57,10 +58,7 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10.0, bottom: 4),
-          child: CircleAvatar(backgroundColor: AppColors.darkGray, radius: 8),
-        ),
+        leading: const AppCircleAvatar(),
         title: Text("New contracts", style: context.titleLarge),
       ),
       body: Padding(

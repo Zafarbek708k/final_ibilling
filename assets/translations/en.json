@@ -20,7 +20,7 @@
   "inn": "INN",
   "statusContract": "Contract Status",
   "noSaved": "No saved contracts",
-  "birth": "Date of Birth",
-  "phone": "Phone Number",
-  "email": "Email"
+  "birth": "Date of Birth: ",
+  "phone": "Phone Number: ",
+  "email": "Email: "
 }

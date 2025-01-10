@@ -21,7 +21,7 @@
   "inn": "INN",
   "statusContract": "Shartnoma holati",
   "noSaved": "Saqlangan shartnomalar mavjud emas",
-  "birth": "Tugilgan sana",
-  "phone": "Telefon raqami",
-  "email": "Elektron pochta"
+  "birth": "Tugilgan sana: ",
+  "phone": "Telefon raqami: ",
+  "email": "Elektron pochta: "
 }
