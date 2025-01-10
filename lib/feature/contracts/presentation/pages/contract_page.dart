@@ -7,6 +7,7 @@ import 'package:final_ibilling/feature/contracts/presentation/pages/filter_page.
 import 'package:final_ibilling/feature/contracts/presentation/pages/search_page.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/calendar.dart';
 import 'package:final_ibilling/feature/contracts/presentation/widgets/loading_state_widget.dart';
+import 'package:final_ibilling/feature/main_wrapper/animated_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,6 +42,8 @@ class ContractPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          16.verticalSpace,
+          // AnimatedThemeToggle(isDarkMode: true, onThemeToggle: (value){}),
           16.verticalSpace,
           BlocBuilder<ContractBloc, ContractState>(
             builder: (context, state) {

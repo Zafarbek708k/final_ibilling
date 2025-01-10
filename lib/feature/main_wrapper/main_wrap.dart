@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_page.dart';
 import 'package:final_ibilling/feature/history/presentation/pages/history_page.dart';
+import 'package:final_ibilling/feature/main_wrapper/seasonal_effect.dart';
 import 'package:final_ibilling/feature/new/presentation/pages/add_new_contract_page.dart';
 import 'package:final_ibilling/feature/profile/presentation/pages/profile_page.dart';
 import 'package:final_ibilling/feature/saved/presentation/pages/saved_page.dart';
@@ -47,7 +48,16 @@ class _MainWrapState extends State<MainWrap> {
       },
       child: Scaffold(
         backgroundColor: AppColors.darkest,
-        body: _pages[_currentIndex],
+        body: IgnorePointer(
+          ignoring: true,
+          child: Stack(
+            children: [
+              IgnorePointer(child: seasonalEffectWidget(Range(0.1, 7), context: context)),
+              _pages[_currentIndex],
+              IgnorePointer(child: seasonalEffectWidget(Range(2, 12), context: context)),
+            ],
+          ),
+        ),
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(splashColor: Colors.transparent, highlightColor: Colors.transparent),
           child: BottomNavigationBar(
