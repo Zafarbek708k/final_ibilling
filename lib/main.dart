@@ -6,6 +6,7 @@ import 'package:final_ibilling/core/singletons/storage/storage.dart';
 import 'package:final_ibilling/feature/contracts/presentation/bloc/contract_bloc.dart';
 import 'package:final_ibilling/feature/history/presentation/bloc/history_bloc.dart';
 import 'package:final_ibilling/feature/main_wrapper/main_wrap.dart';
+import 'package:final_ibilling/feature/main_wrapper/splash.dart';
 import 'package:final_ibilling/feature/new/presentation/bloc/add_new_contract_bloc.dart';
 import 'package:final_ibilling/feature/profile/presentation/bloc/profile_bloc.dart';
 import 'package:final_ibilling/feature/saved/presentation/bloc/saved_bloc.dart';
@@ -62,7 +63,8 @@ class MyApp extends StatelessWidget {
                 theme: AppTheme.lightTheme,
                 darkTheme: DarkTheme.darkTheme,
                 themeMode: ThemeMode.system,
-                home: const MainWrap(),
+                // home: const MainWrap(),
+                home: const SplashScreen(),
               );
             },
           ),
