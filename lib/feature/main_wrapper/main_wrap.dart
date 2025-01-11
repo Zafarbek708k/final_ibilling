@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/assets/colors/app_colors.dart';
-import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/presentation/pages/contract_page.dart';
 import 'package:final_ibilling/feature/history/presentation/pages/history_page.dart';
 import 'package:final_ibilling/feature/main_wrapper/seasonal_effect.dart';
@@ -11,8 +10,6 @@ import 'package:final_ibilling/feature/new/presentation/pages/add_new_invoice.da
 import 'package:final_ibilling/feature/profile/presentation/pages/profile_page.dart';
 import 'package:final_ibilling/feature/saved/presentation/pages/saved_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MainWrap extends StatefulWidget {
@@ -109,58 +106,64 @@ class _MainWrapState extends State<MainWrap> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkest,
-      body: _currentIndex == 2
-          ? (isContractSelected ? const AddNewContractPage() : const AddNewInvoice())
-          : _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          if (index == 2) {
-            _showCreateDialog();
-          } else {
-            setState(() {
-              _currentIndex = index;
-            });
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              _currentIndex == 0 ? "assets/icons/bold_contract.svg" : "assets/icons/outline_contract.svg",
-            ),
-            label: "contract".tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              _currentIndex == 1 ? "assets/icons/bold_history.svg" : "assets/icons/outline_history.svg",
-            ),
-            label: "history".tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              _currentIndex == 2 ? "assets/icons/bold_plus.svg" : "assets/icons/outline_plus.svg",
-            ),
-            label: "addNew".tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              _currentIndex == 3 ? "assets/icons/bold_save.svg" : "assets/icons/outline_save.svg",
-            ),
-            label: "saved".tr(),
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              _currentIndex == 4 ? "assets/icons/bold_profile.svg" : "assets/icons/outline_profile.svg",
-            ),
-            label: "profile".tr(),
-          ),
+      body: Stack(
+        children: [
+          IgnorePointer(child: seasonalEffectWidget(Range(0.1, 7), context: context)),
+          _currentIndex == 2 ? (isContractSelected ? const AddNewContractPage() : const AddNewInvoice()) : _pages[_currentIndex],
+          IgnorePointer(child: seasonalEffectWidget(Range(2, 12), context: context)),
         ],
+      ),
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(splashColor: Colors.transparent, highlightColor: Colors.transparent),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            if (index == 2) {
+              _showCreateDialog();
+            } else {
+              setState(() {
+                _currentIndex = index;
+              });
+            }
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                _currentIndex == 0 ? "assets/icons/bold_contract.svg" : "assets/icons/outline_contract.svg",
+              ),
+              label: "contract".tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                _currentIndex == 1 ? "assets/icons/bold_history.svg" : "assets/icons/outline_history.svg",
+              ),
+              label: "history".tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                _currentIndex == 2 ? "assets/icons/bold_plus.svg" : "assets/icons/outline_plus.svg",
+              ),
+              label: "addNew".tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                _currentIndex == 3 ? "assets/icons/bold_save.svg" : "assets/icons/outline_save.svg",
+              ),
+              label: "saved".tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                _currentIndex == 4 ? "assets/icons/bold_profile.svg" : "assets/icons/outline_profile.svg",
+              ),
+              label: "profile".tr(),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
 
 // class MainWrap extends StatefulWidget {
 //   const MainWrap({super.key});

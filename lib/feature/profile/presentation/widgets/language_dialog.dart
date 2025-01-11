@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:final_ibilling/core/utils/extention.dart';
@@ -110,6 +111,8 @@ class _LangSelectState extends State<LangSelect> {
                         child: MainButton(
                           minWith: double.infinity,
                           onPressed: () async {
+                            log("uz => $uz  \n ru => $ru  \n en => $en");
+
                             if (uz) {
                               context.read<ProfileBloc>().add(ChangeLocaleInProfile(locale: "uz", context: context));
                             } else if (ru) {

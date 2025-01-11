@@ -62,13 +62,7 @@ class ContractPage extends StatelessWidget {
                 return const Center(child: Text("load more item"));
               }
               if (state.status == ContractStateStatus.loaded) {
-                return Expanded(
-                  // child: ContractLoadedWidget(
-                  //   contracts: state.filteredList,
-                  //   key: UniqueKey(),
-                  // ),
-                  child: ContractLoadedPagination(contracts: state.filteredList, key: UniqueKey()),
-                );
+                return Expanded(child: ContractLoadedPagination(contracts: state.filteredList, key: UniqueKey()));
               }
               return const SizedBox.shrink();
             },
@@ -78,4 +72,3 @@ class ContractPage extends StatelessWidget {
     );
   }
 }
-
