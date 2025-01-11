@@ -146,42 +146,6 @@ class _ContractLoadedPaginationState extends State<ContractLoadedPagination> {
         ),
       );
     }
-    if (contract == false) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                MainButton(
-                  onPressed: () => setState(() => contract = true),
-                  title: "Contracts",
-                  bcgC: AppColors.greenDark,
-                  select: contract,
-                ),
-                5.horizontalSpace,
-                MainButton(
-                  onPressed: () => setState(() => contract = false),
-                  title: "Invoice",
-                  bcgC: AppColors.greenDark,
-                  select: !contract,
-                ),
-                const Spacer()
-              ],
-            ),
-          ),
-          const SizedBox(height: 50),
-          Center(child: SvgPicture.asset("assets/icons/empty_saved.svg")),
-          const SizedBox(height: 10),
-          const Center(child: Text("No more invoice")),
-        ],
-      );
-    }
 
     return ListView.builder(
       controller: _scrollController,
@@ -208,7 +172,6 @@ class _ContractLoadedPaginationState extends State<ContractLoadedPagination> {
             ],
           );
         } else if (index <= visibleContracts.length) {
-          // Contract ma'lumotlari
           final contract = visibleContracts[index - 1];
           return ContractWidget(
             key: UniqueKey(),
@@ -224,7 +187,6 @@ class _ContractLoadedPaginationState extends State<ContractLoadedPagination> {
             model: contract,
           );
         } else {
-          // "Load More" yoki yuklash indikator
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Center(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:final_ibilling/feature/contracts/domain/entities/contract_entity.dart';
@@ -140,13 +141,15 @@ class _SaveDetailState extends State<Single> {
                         showDialog(
                           context: context,
                           barrierColor: Colors.black.withOpacity(0.5),
-                          builder: (context) {
+                          builder: (dialogContext) {
                             final ctrl = TextEditingController();
                             return DeleteDialog(
                               controller: ctrl,
                               done: () {
+                                log("done");
                                 context.read<SavedBloc>().add(Delete(contract: widget.contract, context: context));
                                 context.read<ContractBloc>().add(ReloadEvent());
+                                Timer(const Duration(milliseconds: 200), () => Navigator.pop(dialogContext));
                                 Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
                               },
                             );
