@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../assets/colors/app_colors.dart';
+
 class TFWidget extends StatelessWidget {
   const TFWidget({super.key, required this.controller, this.type});
   final TextInputType? type;
@@ -19,11 +21,11 @@ class TFWidget extends StatelessWidget {
         fillColor: Colors.grey[200],
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
-          borderSide: const BorderSide(color: Color(0xffF1F1F1)),
+          borderSide: const BorderSide(color: AppColors.grayDarkest),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
-          borderSide: const BorderSide(color: Color(0xffF1F1F1)),
+          borderSide:  const BorderSide(color: Color(0xffF1F1F1)),
         ),
       ),
     );

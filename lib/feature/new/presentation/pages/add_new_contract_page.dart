@@ -141,12 +141,11 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
                       if (innController.text.isNotEmpty && fNameCtrl.text.isNotEmpty && addressCtrl.text.isNotEmpty) {
                         context.read<AddNewContractBloc>().add(
                               AddNewContractEvent(
-                                status: status,
-                                inn: innController.text.trim(),
-                                address: addressCtrl.text.trim(),
-                                context: context,
-                                clear: resetDropdownValues,
-                              ),
+                                  status: status,
+                                  inn: innController.text.trim(),
+                                  address: addressCtrl.text.trim(),
+                                  context: context,
+                                  clear: resetDropdownValues),
                             );
 
                         context.read<ContractBloc>().init();
@@ -159,7 +158,15 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
                     select: true,
                   );
                 } else {
-                  return MainButton(onPressed: () {}, title: "Save Contract", bcgC: AppColors.greenLight, select: true);
+                  return MaterialButton(
+                    minWidth: double.infinity,
+                    height: 55,
+                    color: AppColors.greenDark,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    onPressed: () {},
+                    child: const CircularProgressIndicator(),
+                  );
+                  // return MainButton(onPressed: () {}, title: "Save Contract", bcgC: AppColors.greenLight, select: true);
                 }
               },
             )

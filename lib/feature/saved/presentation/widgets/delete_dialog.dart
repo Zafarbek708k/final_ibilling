@@ -1,8 +1,7 @@
-
-
 import 'dart:ui';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../assets/colors/app_colors.dart';
 import '../../../setting/common_widgets/main_button_widget.dart';
@@ -54,6 +53,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                 ),
               ),
             ),
+            16.verticalSpace,
             text.isEmpty
                 ? const SizedBox.shrink()
                 : Row(
@@ -64,6 +64,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   title: "\t\t\tCancel\t\t\t",
                   bcgC: AppColors.red.withOpacity(0.2),
                   select: true,
+                  textC: AppColors.red,
                 ),
                 const Spacer(),
                 MainButton(onPressed: widget.done, title: "\t\t\t\tDone\t\t\t\t", bcgC: AppColors.red, select: true),

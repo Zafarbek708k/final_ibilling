@@ -63,10 +63,11 @@ class ContractPage extends StatelessWidget {
               }
               if (state.status == ContractStateStatus.loaded) {
                 return Expanded(
-                  child: ContractLoadedWidget(
-                    contracts: state.filteredList,
-                    key: UniqueKey(),
-                  ),
+                  // child: ContractLoadedWidget(
+                  //   contracts: state.filteredList,
+                  //   key: UniqueKey(),
+                  // ),
+                  child: ContractLoadedPagination(contracts: state.filteredList, key: UniqueKey()),
                 );
               }
               return const SizedBox.shrink();
