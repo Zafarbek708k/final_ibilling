@@ -6,6 +6,7 @@ import 'package:final_ibilling/feature/history/presentation/bloc/history_bloc.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../contracts/presentation/bloc/contract_bloc.dart';
 
@@ -95,7 +96,7 @@ class DecoratedDateBox extends StatelessWidget {
 
     return SizedBox(
       height: 37.h,
-      width: 122.w,
+      width: 115.w,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: const Color(0xff2A2A2D),
@@ -109,11 +110,11 @@ class DecoratedDateBox extends StatelessWidget {
                 child: Text(
                   displayText,
                   overflow: TextOverflow.ellipsis,
-                  style: context.displayMedium?.copyWith(fontSize: 13),
+                  style: context.displayMedium?.copyWith(fontSize: 13, color: const Color(0xffA5A5A5)),
                 ),
               ),
-              12.horizontalSpace,
-              const Icon(Icons.calendar_month, color: Colors.white),
+              8.horizontalSpace,
+              SvgPicture.asset("assets/icons/Calendar.svg", color: const Color(0xffA5A5A5), height: 20),
             ],
           ),
         ),

@@ -6,6 +6,11 @@ import 'package:final_ibilling/feature/history/presentation/bloc/history_bloc.da
 import 'package:final_ibilling/feature/history/presentation/widgets/data_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../../assets/colors/app_colors.dart';
+import '../../../contracts/presentation/pages/filter_page.dart';
+import '../../../contracts/presentation/pages/search_page.dart';
 import '../../../contracts/presentation/widgets/app_circle_avatar.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -18,6 +23,17 @@ class HistoryPage extends StatelessWidget {
         forceMaterialTransparency: true,
         leading: const AppCircleAvatar(),
         title: Text("History", style: context.titleLarge),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const FilterPage())),
+            icon: SvgPicture.asset("assets/icons/Filter.svg"),
+          ),
+          const Text("|", style: TextStyle(color: Colors.white, fontSize: 20)),
+          IconButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage())),
+            icon: const Icon(Icons.search, color: AppColors.white),
+          ),
+        ],
       ),
       body: Column(
         children: [

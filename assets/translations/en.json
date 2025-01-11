@@ -11,7 +11,7 @@
   "lastInvoice": "Last Invoice:",
   "numInvoice": "Invoice Number:",
   "paid": "Paid",
-  "inProcess": "In Process",
+  "inProcess": "In process",
   "rejectByPayme": "Rejected by Payme",
   "rejectByIQ": "Rejected by IQ",
   "emptyHistory": "There is no history for this period",

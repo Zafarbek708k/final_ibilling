@@ -1,321 +1,180 @@
 import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/extention.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomCalendarWidget extends StatefulWidget {
-  const CustomCalendarWidget({super.key, required this.onDateSelected});
+
+class NewCalendar extends StatefulWidget {
+  const NewCalendar({super.key, required this.onDateSelected});
 
   final Function({required DateTime date}) onDateSelected;
 
   @override
-  CustomCalendarWidgetState createState() => CustomCalendarWidgetState();
+  State<NewCalendar> createState() => _NewCalendarState();
 }
 
-class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
-  int currentYear = DateTime.now().year;
-  int currentMonth = DateTime.now().month;
-  int currentWeekIndex = 0;
-  int today = DateTime.now().day;
-  int? selectedDay;
+class _NewCalendarState extends State<NewCalendar> {
+  DateTime currentWeek = DateTime.now();
+  DateTime today = DateTime.now();
+  DateTime? selectedDate;
 
-  void _goToPreviousWeek() {
+  List<DateTime> _generateCurrentWeekDays() {
+    final firstDayOfWeek = currentWeek.subtract(Duration(days: currentWeek.weekday - 1));
+    return List.generate(7, (index) => firstDayOfWeek.add(Duration(days: index)));
+  }
+
+  void goNextWeek() {
     setState(() {
-      if (currentWeekIndex > 0) {
-        currentWeekIndex--;
-      } else {
-        if (currentMonth == 1) {
-          currentMonth = 12;
-          currentYear--;
-        } else {
-          currentMonth--;
-        }
-        currentWeekIndex = _calculateWeeksInMonth(currentYear, currentMonth) - 1;
-      }
-      selectedDay = null;
+      currentWeek = currentWeek.add(const Duration(days: 7));
     });
   }
 
-  void _goToNextWeek() {
+  void goPreviousWeek() {
     setState(() {
-      final totalWeeks = _calculateWeeksInMonth(currentYear, currentMonth);
-      if (currentWeekIndex < totalWeeks - 1) {
-        currentWeekIndex++;
-      } else {
-        if (currentMonth == 12) {
-          currentMonth = 1;
-          currentYear++;
-        } else {
-          currentMonth++;
-        }
-        currentWeekIndex = 0;
-      }
-      selectedDay = null;
+      currentWeek = currentWeek.subtract(const Duration(days: 7));
     });
   }
 
-  int _calculateWeeksInMonth(int year, int month) {
-    final daysInMonth = CalendarUtils.getMonthDays(year, month).length;
-    return (daysInMonth / 6).ceil(); // 6 ta kunlik qism hisoblash
-  }
-
-  List<Map<String, dynamic>> _getCurrentWeekDays() {
-    final monthDays = CalendarUtils.getMonthDays(currentYear, currentMonth);
-    final startIndex = currentWeekIndex * 6;
-    final endIndex = (startIndex + 6).clamp(0, monthDays.length);
-    return monthDays.sublist(startIndex, endIndex);
+  String checkMonth(int num) {
+    switch (num) {
+      case 1:
+        return "January";
+      case 2:
+        return "February";
+      case 3:
+        return "March";
+      case 4:
+        return "April";
+      case 5:
+        return "May";
+      case 6:
+        return "June";
+      case 7:
+        return "July";
+      case 8:
+        return "August";
+      case 9:
+        return "September";
+      case 10:
+        return "October";
+      case 11:
+        return "November";
+      case 12:
+        return "December";
+      default:
+        return "Invalid month";
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final weekDays = _getCurrentWeekDays();
+    final weekDays = _generateCurrentWeekDays();
 
-    return DecoratedBox(
-      decoration: const BoxDecoration(color: Color(0xff1E1E20)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${CalendarUtils.monthNames[currentMonth - 1]}, $currentYear',
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
-                  onPressed: _goToPreviousWeek,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right, color: Colors.white, size: 35),
-                  onPressed: _goToNextWeek,
-                ),
-              ],
-            ),
-          ),
-          8.verticalSpace,
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              itemCount: weekDays.length,
-              itemBuilder: (context, index) {
-                final day = weekDays[index];
-                final isSelected = selectedDay == day['day'];
-                final isToday = day['day'] == today;
-                final textColor =
-                    isToday ? (isSelected ? AppColors.white : AppColors.greenDark) : (isSelected ? AppColors.white : AppColors.grayShadow);
-                final underlineColor =
-                    isToday ? (isSelected ? AppColors.white : AppColors.greenDark) : (isSelected ? AppColors.white : AppColors.grayShadow);
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() => selectedDay = day['day']);
-                    widget.onDateSelected(date: day['date']);
-                  },
-                  child: Container(
-                    width: 55,
-                    margin: const EdgeInsets.only(left: 4, right: 4, bottom: 10),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.greenDark : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          day['dayName'],
-                          style: context.bodyLarge?.copyWith(color: textColor),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          day['day'].toString(),
-                          style: context.bodyLarge?.copyWith(color: textColor),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 18.0, right: 18, top: 5),
-                          child: Divider(
-                            color: underlineColor,
-                            height: 1,
-                            thickness: 1,
-                          ),
-                        ),
-                      ],
-                    ),
+    return SizedBox(
+      height: 150,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(color: AppColors.darkGray),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("${checkMonth(currentWeek.month)}, ${currentWeek.year}", style: context.headlineMedium),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: goPreviousWeek,
+                        icon: const Icon(Icons.arrow_back_ios),
+                      ),
+                      IconButton(
+                        onPressed: goNextWeek,
+                        icon: const Icon(Icons.arrow_forward_ios),
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              // Days of the week
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(weekDays.length - 1, (index) {
+                  final date = weekDays[index];
+                  final isSelected = selectedDate == date;
+                  final isToday = date.day == today.day && date.month == today.month && date.year == today.year;
+
+                  final color = isToday ? (isSelected ? Colors.white : AppColors.greenDark) : (isSelected ? Colors.white : Colors.grey);
+
+                  final backgroundColor = isSelected ? AppColors.greenDark : Colors.transparent;
+
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                      widget.onDateSelected(date: date);
+                    },
+                    child: Container(
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0, top: 2),
+                        child: Column(
+                          children: [
+                            Text(
+                              _getDayName(date.weekday),
+                              style: context.headlineMedium?.copyWith(color: color),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              "${date.day}",
+                              style: context.headlineMedium?.copyWith(color: color),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15.0, right: 15, top: 5),
+                              child: Divider(
+                                color: color,
+                                height: 1,
+                                thickness: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
-}
 
-class CalendarUtils {
-  static const List<String> monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
-
-  static const List<String> dayNames = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-
-  static List<Map<String, dynamic>> getMonthDays(int year, int month) {
-    final firstDayOfMonth = DateTime(year, month, 1);
-    final daysInMonth = DateTime(year, month + 1, 0).day;
-
-    return List.generate(daysInMonth, (index) {
-      final date = firstDayOfMonth.add(Duration(days: index));
-      return {
-        'dayName': dayNames[date.weekday - 1], // Weekday starts from 1 (Monday)
-        'day': date.day,
-        'date': date,
-      };
-    });
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return "Mo";
+      case DateTime.tuesday:
+        return "Tu";
+      case DateTime.wednesday:
+        return "We";
+      case DateTime.thursday:
+        return "Th";
+      case DateTime.friday:
+        return "Fr";
+      case DateTime.saturday:
+        return "Sa";
+      case DateTime.sunday:
+        return "Su";
+      default:
+        return "";
+    }
   }
 }
-
-// class CustomCalendarWidget extends StatefulWidget {
-//   const CustomCalendarWidget({super.key, required this.onDateSelected});
-//
-//   final Function({required DateTime date}) onDateSelected;
-//
-//   @override
-//   CustomCalendarWidgetState createState() => CustomCalendarWidgetState();
-// }
-//
-// class CustomCalendarWidgetState extends State<CustomCalendarWidget> {
-//   int currentYear = DateTime.now().year;
-//   int currentMonth = DateTime.now().month;
-//   int today = DateTime.now().day;
-//   int? selectedDay;
-//
-//   void _goToPreviousMonth() {
-//     setState(() {
-//       if (currentMonth == 1) {
-//         currentMonth = 12;
-//         currentYear--;
-//       } else {
-//         currentMonth--;
-//       }
-//       selectedDay = null;
-//     });
-//   }
-//
-//   void _goToNextMonth() {
-//     setState(() {
-//       if (currentMonth == 12) {
-//         currentMonth = 1;
-//         currentYear++;
-//       } else {
-//         currentMonth++;
-//       }
-//       selectedDay = null; // Reset selected day when month changes
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final monthDays = CalendarUtils.getMonthDays(currentYear, currentMonth);
-//     return DecoratedBox(
-//       decoration: const BoxDecoration(color: Color(0xff1E1E20)),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 18.0),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Text(
-//                   '${CalendarUtils.monthNames[currentMonth - 1]}, $currentYear',
-//                   style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 ),
-//                 const Spacer(),
-//                 IconButton(
-//                   icon: const Icon(Icons.chevron_left, color: Colors.white, size: 35),
-//                   onPressed: _goToPreviousMonth,
-//                 ),
-//                 IconButton(
-//                   icon: const Icon(Icons.chevron_right, color: Colors.white, size: 35),
-//                   onPressed: _goToNextMonth,
-//                 ),
-//               ],
-//             ),
-//           ),
-//           8.verticalSpace,
-//           SizedBox(
-//             height: 100,
-//             child: ListView.builder(
-//               physics: const NeverScrollableScrollPhysics(),
-//               scrollDirection: Axis.horizontal,
-//               itemCount: monthDays.length,
-//               itemBuilder: (context, index) {
-//                 final day = monthDays[index];
-//                 final isSelected = selectedDay == day['day'];
-//
-//                 return GestureDetector(
-//                   onTap: () {
-//                     setState(() => selectedDay = day['day']);
-//                     widget.onDateSelected(date: day['date']);
-//                   },
-//                   child: Container(
-//                     width: 55,
-//                     margin: const EdgeInsets.only(left: 4, right: 4, bottom: 10),
-//                     decoration: BoxDecoration(
-//                       color: isSelected ? Colors.teal : Colors.transparent,
-//                       borderRadius: BorderRadius.circular(8),
-//                     ),
-//                     child: Column(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       mainAxisSize: MainAxisSize.min,
-//                       children: [
-//                         Text(
-//                           day['dayName'],
-//                           style: context.bodyLarge?.copyWith(
-//                             color: day["day"] == DateTime.now().day ? (isSelected ? AppColors.white : AppColors.greenDark) : AppColors.grayShadow,
-//                           ),
-//                         ),
-//                         const SizedBox(height: 5),
-//                         Text(
-//                           day['day'].toString(),
-//                           style: context.bodyLarge?.copyWith(
-//                             color: day["day"] == DateTime.now().day ? (isSelected ? AppColors.white : AppColors.greenDark) : AppColors.grayShadow,
-//                           ),
-//                         ),
-//                         Padding(
-//                           padding: const EdgeInsets.only(left: 18.0, right: 18, top: 5),
-//                           child: Divider(
-//                             color: day["day"] == DateTime.now().day ? (isSelected ? AppColors.white : AppColors.greenDark) : AppColors.grayShadow,
-//                             height: 1,
-//                             thickness: 1,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

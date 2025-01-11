@@ -11,8 +11,9 @@ import '../../../../assets/colors/app_colors.dart';
 import '../../../../core/utils/utils_service.dart';
 import '../../../contracts/presentation/widgets/contract_widget.dart';
 import '../../../contracts/presentation/widgets/loading_state_widget.dart';
-import '../../../setting/common_widgets/main_button_widget.dart';
 import '../bloc/saved_bloc.dart';
+import '../widgets/delete_dialog.dart';
+import '../widgets/save_delete_btn.dart';
 import '../widgets/single_contract_card_widget.dart';
 
 class Single extends StatefulWidget {
@@ -136,9 +137,21 @@ class _SaveDetailState extends State<Single> {
                     },
                     delete: () {
                       if (widget.contract.author == "Zafarbek Karimov") {
-                        context.read<SavedBloc>().add(Delete(contract: widget.contract, context: context));
-                        context.read<ContractBloc>().add(ReloadEvent());
-                        Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
+                        showDialog(
+                          context: context,
+                          barrierColor: Colors.black.withOpacity(0.5),
+                          builder: (context) {
+                            final ctrl = TextEditingController();
+                            return DeleteDialog(
+                              controller: ctrl,
+                              done: () {
+                                context.read<SavedBloc>().add(Delete(contract: widget.contract, context: context));
+                                context.read<ContractBloc>().add(ReloadEvent());
+                                Timer(const Duration(milliseconds: 200), () => Navigator.pop(context));
+                              },
+                            );
+                          },
+                        );
                       } else {
                         Utils.fireSnackBar("You can not delete others contracts", context);
                       }
@@ -176,35 +189,4 @@ class _SaveDetailState extends State<Single> {
   }
 }
 
-class SaveAndDeleteButton extends StatelessWidget {
-  const SaveAndDeleteButton({super.key, required this.save, required this.delete});
 
-  final VoidCallback save, delete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: MainButton(
-            onPressed: delete,
-            title: "Delete contract",
-            bcgC: Colors.red.withOpacity(0.3),
-            textC: Colors.red,
-            select: true,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: MainButton(
-            onPressed: save,
-            title: "Save contract",
-            bcgC: AppColors.greenDark.withOpacity(0.3),
-            textC: AppColors.greenDark,
-            select: true,
-          ),
-        ),
-      ],
-    );
-  }
-}

@@ -39,8 +39,9 @@ class ContractPage extends StatelessWidget {
         children: [
           BlocBuilder<ContractBloc, ContractState>(
             builder: (context, state) {
-              return CustomCalendarWidget(
+              return NewCalendar(
                 onDateSelected: ({required DateTime date}) {
+                  debugPrint("$date");
                   if (state.status == ContractStateStatus.loaded) {
                     context.read<ContractBloc>().add(SelectOneDayEvent(date: date));
                   }
@@ -62,10 +63,11 @@ class ContractPage extends StatelessWidget {
               }
               if (state.status == ContractStateStatus.loaded) {
                 return Expanded(
-                    child: ContractLoadedWidget(
-                  contracts: state.filteredList,
-                  key: UniqueKey(),
-                ));
+                  child: ContractLoadedWidget(
+                    contracts: state.filteredList,
+                    key: UniqueKey(),
+                  ),
+                );
               }
               return const SizedBox.shrink();
             },
@@ -75,3 +77,4 @@ class ContractPage extends StatelessWidget {
     );
   }
 }
+

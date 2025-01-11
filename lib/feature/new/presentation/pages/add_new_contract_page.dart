@@ -54,6 +54,11 @@ class _AddNewContractPageState extends State<AddNewContractPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

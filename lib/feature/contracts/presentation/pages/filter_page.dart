@@ -119,9 +119,9 @@ class _FilterPageState extends State<FilterPage> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16),
           child: SizedBox(
-            height: 50,
+            height: 40,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
