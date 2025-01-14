@@ -1,6 +1,6 @@
-import 'package:final_ibilling/assets/colors/app_colors.dart';
 import 'package:final_ibilling/core/utils/utils_service.dart';
 import 'package:final_ibilling/feature/main_wrapper/main_wrap.dart';
+import 'package:final_ibilling/feature/main_wrapper/pin_keyboard.dart';
 import 'package:final_ibilling/feature/main_wrapper/seasonal_effect.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkBiometricAuth(); // Initial biometric check
+    _checkBiometricAuth();
   }
 
   Future<void> _checkBiometricAuth() async {
@@ -33,18 +33,9 @@ class _SplashScreenState extends State<SplashScreen> {
       if (isAvailable && isDeviceSupported) {
         final isAuthenticated = await _auth.authenticate(
           localizedReason: 'Iltimos, shaxsingizni tasdiqlang',
-          options: const AuthenticationOptions(
-            stickyAuth: true,
-            useErrorDialogs: true,
-            biometricOnly: true,
-          ),
+          options: const AuthenticationOptions(stickyAuth: true, useErrorDialogs: true, biometricOnly: true),
         );
-
-        if (isAuthenticated) {
-          _navigateToHome();
-        } else {
-          _showError('Autentifikatsiya muvaffaqiyatsiz tugadi.');
-        }
+        if (isAuthenticated) _navigateToHome();
       } else {
         _showError('Biometrik autentifikatsiya qo‘llab-quvvatlanmaydi.');
       }
@@ -80,35 +71,20 @@ class _SplashScreenState extends State<SplashScreen> {
                   focusNode: _focusNode,
                   length: 4,
                   keyboardType: TextInputType.none,
-                  onCompleted: (value){
-                    if(value == "1234"){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const MainWrap()));
-                    }else{
-                      Utils.fireSnackBar("InCorrect pin", context);
-                    }
-                  },
+                  onCompleted: (value) => (value == "1234")
+                      ? Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainWrap()))
+                      : Utils.fireSnackBar("InCorrect pin", context),
                 ),
               ),
               75.verticalSpace,
-
-              // Custom Number Keyboard
               NumberKeyboardWidget(
                 onKeyPressed: (value) {
-                  if (_pinController.text.length < 4) {
-                    _pinController.text += value; // Append the key
-                  }
+                  if (_pinController.text.length < 4) _pinController.text += value;
                 },
                 onBackspacePressed: () {
-                  if (_pinController.text.isNotEmpty) {
-                    _pinController.text = _pinController.text.substring(
-                      0,
-                      _pinController.text.length - 1,
-                    );
-                  }
+                  if (_pinController.text.isNotEmpty) _pinController.text = _pinController.text.substring(0, _pinController.text.length - 1);
                 },
-                onFingerPrintPressed: () {
-                  _checkBiometricAuth(); // Trigger biometric auth
-                },
+                onFingerPrintPressed: () => _checkBiometricAuth(),
               ),
               50.verticalSpace,
             ],
@@ -119,46 +95,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-
-class NumberKeyboardWidget extends StatelessWidget {
-  final void Function(String) onKeyPressed;
-  final void Function() onBackspacePressed;
-  final void Function() onFingerPrintPressed;
-
-  const NumberKeyboardWidget({
-    super.key,
-    required this.onKeyPressed,
-    required this.onFingerPrintPressed,
-    required this.onBackspacePressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final List<String> keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'F', '0', 'X'];
-
-    return GridView.builder(
-      shrinkWrap: true,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 25),
-      itemCount: keys.length,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 5,
-        childAspectRatio: 2,
-      ),
-      itemBuilder: (context, index) {
-        final key = keys[index];
-        return MaterialButton(
-          minWidth: 20,
-          height: 20,
-          onPressed: key == 'X' ? onBackspacePressed : key == 'F' ? onFingerPrintPressed : () => onKeyPressed(key),
-          color: AppColors.greenDark.withOpacity(0.5),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-          child: key == 'X' ? const Icon(Icons.backspace_outlined) : key == 'F' ? const Icon(Icons.fingerprint) : Text(key),
-        );
-      },
-    );
-  }
-}
-

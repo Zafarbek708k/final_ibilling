@@ -68,7 +68,7 @@ class ContractBloc extends Bloc<ContractEvent, ContractState> {
     final result = await _homeUseCase.call(NoParams());
 
     result.fold(
-      (failure) => emit(state.copyWith(status: ContractStateStatus.error, errorMsg: failure.message)),
+      (failure) => emit(state.copyWith(status: ContractStateStatus.error, errorMsg: "failure.message")),
       (users) {
         final contracts = users.expand((user) => user.contracts).toList();
         emit(state.copyWith(status: ContractStateStatus.loaded, userList: users, filteredList: contracts, fullContract: contracts));
